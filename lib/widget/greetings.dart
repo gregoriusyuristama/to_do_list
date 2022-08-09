@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const textGreetings = 'Halo';
+
 class Greetings extends StatelessWidget {
   double availableHeight;
   double availableWidth;
@@ -15,7 +17,7 @@ class Greetings extends StatelessWidget {
             flex: 1,
             child: FittedBox(
               child: Text(
-                'Halo,',
+                textGreetings,
                 style: Theme.of(context).textTheme.headline2,
               ),
             ),

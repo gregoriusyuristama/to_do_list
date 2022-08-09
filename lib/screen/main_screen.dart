@@ -40,11 +40,11 @@ class MainScreen extends StatelessWidget {
                 SizedBox(
                   height: availableHeight * 0.025,
                 ),
-                SearchTodo(availableWidth * 0.85, availableHeight * 0.08),
-                SizedBox(
-                  height: availableHeight * 0.025,
-                ),
-                TodoBox(availableWidth * 0.95, availableHeight * 0.695),
+                // SearchTodo(availableWidth * 0.85, availableHeight * 0.08),
+                // SizedBox(
+                //   height: availableHeight * 0.025,
+                // ),
+                TodoBox(availableWidth * 0.95, availableHeight * 0.8),
               ],
             ),
           ),
