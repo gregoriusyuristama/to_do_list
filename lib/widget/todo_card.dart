@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_list/models/todo_operation.dart';
+import 'package:to_do_list/widget/edit_todo_bottom_sheet.dart';
 
-const cardPadding = EdgeInsets.only(
-  left: 10.0,
-  right: 10.0,
-  bottom: 20,
+import '../models/todo.dart';
+import 'todo_card_content.dart';
+
+const cardPadding = EdgeInsets.all(
+  10,
 );
 var cardBoxDecorator = BoxDecoration(
   color: Colors.white,
@@ -18,65 +22,66 @@ const contentPadding = EdgeInsets.only(left: 25.0);
 class TodoCard extends StatelessWidget {
   double width;
   double height;
-  String text;
-  int priority;
-  TodoCard(this.width, this.height, this.text, this.priority);
+  ToDo todo;
+  Function doneTd;
+  TodoCard(this.width, this.height, this.todo, this.doneTd);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: cardPadding,
-      child: Container(
-        height: height * 0.15,
-        width: width * 0.9,
-        decoration: cardBoxDecorator,
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: contentPadding,
-                child: cardContent(text: text, priority: priority),
-              ),
+      child: GestureDetector(
+        onTap: () => showModalBottomSheet(
+          context: context,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(25.0),
             ),
-            Expanded(
-              child: Icon(
-                Icons.check_circle_outline_outlined,
+          ),
+          isScrollControlled: true,
+          builder: ((context) {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(
+                MediaQuery.of(context).viewInsets.left + 25,
+                MediaQuery.of(context).viewInsets.top + 25,
+                MediaQuery.of(context).viewInsets.right + 25,
+                MediaQuery.of(context).viewInsets.bottom + 25,
               ),
-            ),
-          ],
+              child: EditTodoBottomSheet(
+                todo: todo,
+              ),
+            );
+            ;
+          }),
+        ),
+        child: Container(
+          height: 100,
+          width: 400,
+          decoration: cardBoxDecorator,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: contentPadding,
+                  child: cardContent(todo),
+                ),
+              ),
+              Expanded(
+                child: Consumer<TodoOperation>(
+                  builder: (context, todoData, child) => IconButton(
+                      icon: Icon(todo.todoDone
+                          ? Icons.check_circle
+                          : Icons.check_circle_outline),
+                      onPressed: () {
+                        todoData.doneTodo(todo);
+                      }),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class cardContent extends StatelessWidget {
-  const cardContent({
-    Key? key,
-    required this.text,
-    required this.priority,
-  }) : super(key: key);
-
-  final String text;
-  final int priority;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          text,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.subtitle1,
-        ),
-        Text(
-          'Priority : ${priority.toString()}',
-          style: Theme.of(context).textTheme.subtitle2,
-        ),
-      ],
     );
   }
 }

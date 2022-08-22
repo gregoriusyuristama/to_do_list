@@ -1,11 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_list/models/todo_operation.dart';
 import 'package:flutter/services.dart';
-import 'package:to_do_list/screen/main_screen.dart';
+import 'firebase_options.dart';
+import 'screen/register_screen.dart';
 
-void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -13,7 +19,7 @@ var appTheme = ThemeData(
   fontFamily: 'Poppins',
   primaryColor: Color.fromRGBO(138, 218, 237, 1.0),
   androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
-  textTheme: TextTheme(
+  textTheme: const TextTheme(
     headline2: TextStyle(
       color: Colors.white,
       fontSize: 32,
@@ -29,7 +35,7 @@ var appTheme = ThemeData(
     ),
     headline3: TextStyle(
       color: Colors.black,
-      fontSize: 20,
+      fontSize: 24,
       fontWeight: FontWeight.bold,
     ),
     subtitle1: TextStyle(
@@ -50,10 +56,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ToDoi',
-      theme: appTheme,
-      home: MainScreen(),
+    return ChangeNotifierProvider(
+      create: (context) => TodoOperation(),
+      child: MaterialApp(
+        title: 'ToDoi',
+        theme: appTheme,
+        home: RegisterScreen(),
+      ),
     );
   }
 }

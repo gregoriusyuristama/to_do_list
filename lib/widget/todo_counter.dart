@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_list/models/todo_operation.dart';
 
 var backgroundCardDecoration = BoxDecoration(
   color: Color.fromRGBO(246, 164, 97, 1.0),
@@ -20,33 +22,32 @@ const counterTextStyle = TextStyle(
 );
 const sizedBoxWidth = 20.0;
 
-const titleTextStyle = TextStyle(fontSize: 18);
+const titleTextStyle = TextStyle(
+  fontSize: 18,
+);
 
 class TodoCounter extends StatelessWidget {
-  double availableHeight;
-  double availableWidth;
-
-  TodoCounter(this.availableWidth, this.availableHeight);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: backgroundCardDecoration,
-      width: availableWidth,
-      height: availableHeight,
-      child: Row(
-        children: [
-          Container(
-            margin: counterCardMargin,
-            decoration: counterCardDecoration,
-            width: counterCardWidth,
-            height: counterCardHeight,
-            child: counterText('21'),
-          ),
-          SizedBox(
-            width: sizedBoxWidth,
-          ),
-          textTitle('To Do List'),
-        ],
+    return Consumer<TodoOperation>(
+      builder: (context, todoData, child) => Container(
+        decoration: backgroundCardDecoration,
+        width: 200,
+        child: Row(
+          children: [
+            Container(
+              margin: counterCardMargin,
+              decoration: counterCardDecoration,
+              width: counterCardWidth,
+              height: counterCardHeight,
+              child: counterText(todoData.todoCount.toString()),
+            ),
+            SizedBox(
+              width: sizedBoxWidth,
+            ),
+            textTitle('To Do List'),
+          ],
+        ),
       ),
     );
   }

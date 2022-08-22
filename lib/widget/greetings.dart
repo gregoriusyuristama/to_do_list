@@ -1,37 +1,57 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:to_do_list/screen/register_screen.dart';
 
-const textGreetings = 'Halo';
+const textGreetings = 'Hi,';
 
 class Greetings extends StatelessWidget {
-  double availableHeight;
-  double availableWidth;
-  Greetings(this.availableWidth, this.availableHeight);
+  Greetings(this.name);
+
+  String name;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: availableHeight,
-      width: availableWidth,
-      child: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: FittedBox(
+    return LayoutBuilder(
+      builder: (context, constraints) => Container(
+        alignment: FractionalOffset.bottomCenter,
+        child: Row(
+          children: [
+            Container(
+              height: constraints.maxHeight * 0.7,
+              width: constraints.maxWidth * 0.9,
+              alignment: Alignment.centerLeft,
               child: Text(
-                textGreetings,
-                style: Theme.of(context).textTheme.headline2,
+                '$textGreetings $name',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1
+                    ?.copyWith(fontSize: 40),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-          ),
-          Expanded(
-            flex: 2,
-            child: FittedBox(
-              child: Text(
-                'Jonathan!',
-                style: Theme.of(context).textTheme.headline1,
+            Container(
+              height: constraints.maxHeight * 0.7,
+              width: constraints.maxWidth * 0.1,
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegisterScreen(),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  FontAwesomeIcons.signOut,
+                  color: Colors.white,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

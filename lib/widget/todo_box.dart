@@ -1,5 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_list/models/todo_operation.dart';
+import 'package:to_do_list/screen/register_screen.dart';
+import 'package:to_do_list/widget/empty_todo.dart';
 
+import 'add_todo_bottom_sheet.dart';
 import 'bottom_button.dart';
 import 'todo_card.dart';
 
@@ -7,112 +15,111 @@ const titleBoxDecoration = BoxDecoration(
   borderRadius: BorderRadius.only(
     topLeft: Radius.circular(20),
     topRight: Radius.circular(20),
-    bottomRight: Radius.circular(20),
-    bottomLeft: Radius.circular(20),
   ),
   color: Color.fromRGBO(247, 251, 255, 1.0),
 );
 const titleWidgetCardPadding = EdgeInsets.only(
-  top: 30.0,
+  // top: 30.0,
   left: 30,
   right: 25,
-  bottom: 15,
+  // bottom: 15,
 );
 
 class TodoBox extends StatelessWidget {
-  double availableHeight;
-  double availableWidth;
+  final bottomPadding;
 
-  TodoBox(this.availableWidth, this.availableHeight);
+  TodoBox(this.bottomPadding);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: titleBoxDecoration,
-      height: availableHeight,
-      width: availableWidth,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Column(
-            children: [
-              titleWidgetCard(
-                constraints.maxWidth,
-                constraints.maxHeight * 0.125,
-                context,
-              ),
-              sectionDivider(
-                constraints.maxHeight * 0.025,
-              ),
-              todoCardContainer(
-                constraints.maxWidth,
-                constraints.minHeight,
-                0.7,
-              ),
-              sectionDivider(
-                constraints.maxHeight * 0.025,
-              ),
-              bottomNavBar(constraints.maxWidth, constraints.maxHeight * 0.125),
-            ],
-          );
-        },
-      ),
-    );
+    return Consumer<TodoOperation>(builder: (context, todoData, child) {
+      return Container(
+        decoration: titleBoxDecoration,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              children: [
+                Container(
+                  height: constraints.maxHeight * 0.125,
+                  width: constraints.maxWidth,
+                  padding: titleWidgetCardPadding,
+                  alignment: FractionalOffset.bottomLeft,
+                  child: Text(
+                    'Your To Do Lists',
+                    style: Theme.of(context).textTheme.headline3,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Divider(
+                  height: constraints.maxHeight * 0.025,
+                  thickness: 1,
+                ),
+                Container(
+                  height: constraints.maxHeight * 0.7,
+                  width: constraints.maxWidth,
+                  alignment: Alignment.center,
+                  child: todoData.todolist.isEmpty
+                      ? EmptyTodo()
+                      : ListView.builder(
+                          itemCount: todoData.todoCount,
+                          itemBuilder: (context, index) {
+                            final todoItem = todoData.todolist[index];
+                            return TodoCard(
+                              constraints.maxWidth,
+                              constraints.maxHeight,
+                              todoItem,
+                              () {
+                                todoData.doneTodo(todoItem);
+                              },
+                            );
+                          },
+                        ),
+                ),
+                Divider(
+                  height: constraints.maxHeight * 0.025,
+                  thickness: 1,
+                ),
+                Container(
+                  height: constraints.maxHeight * 0.125,
+                  width: constraints.maxWidth,
+                  padding: bottomPadding,
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      bottomButton(
+                        FontAwesomeIcons.solidSquarePlus,
+                        () => showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(25.0),
+                            ),
+                          ),
+                          isScrollControlled: true,
+                          builder: ((context) {
+                            return Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                MediaQuery.of(context).viewInsets.left + 25,
+                                MediaQuery.of(context).viewInsets.top + 25,
+                                MediaQuery.of(context).viewInsets.right + 25,
+                                MediaQuery.of(context).viewInsets.bottom + 25,
+                              ),
+                              child: AddTodoBottomSheet(),
+                            );
+                            ;
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    });
   }
-
-  Container titleWidgetCard(double width, double height, BuildContext context) {
-    return Container(
-      height: height,
-      padding: titleWidgetCardPadding,
-      alignment: FractionalOffset.bottomLeft,
-      width: width,
-      child: Text(
-        'Your To-do-lists',
-        style: Theme.of(context).textTheme.headline3,
-        textAlign: TextAlign.left,
-      ),
-    );
-  }
-}
-
-Divider sectionDivider(double height) {
-  return Divider(
-    height: height,
-    thickness: 1,
-  );
-}
-
-Container todoCardContainer(
-    double width, double height, double cardHeightFactor) {
-  return Container(
-    height: height * cardHeightFactor,
-    width: width,
-    child: SingleChildScrollView(
-      child: Column(
-        children: [
-          TodoCard(width, height, "Homework", 5),
-          TodoCard(width, height, "Programming", 4),
-          TodoCard(width, height, "Do Final Project", 3),
-          TodoCard(width, height, "Read Books", 2),
-          TodoCard(width, height, "Medicine", 1),
-          TodoCard(width, height, "Sleep", 1),
-        ],
-      ),
-    ),
-  );
-}
-
-Container bottomNavBar(double width, double height) {
-  return Container(
-    height: height,
-    width: width,
-    alignment: Alignment.center,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        bottomButton(Icons.home_filled),
-        bottomButton(Icons.table_chart_rounded),
-        bottomButton(Icons.add_box_rounded),
-      ],
-    ),
-  );
 }
