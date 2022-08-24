@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'todo.dart';
@@ -21,6 +23,29 @@ class TodoOperation with ChangeNotifier {
     return UnmodifiableListView(_todolist);
   }
 
+  Future<void> setTodolist() async {
+    List<ToDo> listTodo = [];
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('to_dos')
+        .get()
+        .then((value) {
+      for (var data in value.docs) {
+        listTodo.add(ToDo(
+          id: data.data()['to_do_id'],
+          todoName: data.data()['to_do_text'],
+          priority: data.data()['to_do_prio'],
+          todoDone: data.data()['to_do_done'],
+        ));
+      }
+      _todolist = listTodo;
+    });
+    sortTodolist();
+    notifyListeners();
+    return;
+  }
+
   void sortTodolist() {
     _todolist.sort(
       (a, b) => b.priority.compareTo(a.priority),
@@ -35,30 +60,65 @@ class TodoOperation with ChangeNotifier {
   }
 
   void addTodo(String todoText, int prio) {
+    String todoId = DateTime.now().toString();
     _todolist.add(
       ToDo(
-        id: DateTime.now().toString(),
+        id: todoId,
         todoName: todoText,
         priority: prio,
       ),
     );
     sortTodolist();
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('to_dos')
+        .doc(todoId)
+        .set({
+      'to_do_id': todoId,
+      'to_do_text': todoText,
+      'to_do_prio': prio,
+      'to_do_done': false,
+    });
     notifyListeners();
   }
 
   void doneTodo(ToDo td) {
     td.toggleDone();
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('to_dos')
+        .doc(td.id)
+        .update({
+      'to_do_done': td.todoDone,
+    });
     sortTodolist();
     notifyListeners();
   }
 
   void updateTodo(ToDo td) {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('to_dos')
+        .doc(td.id)
+        .update({
+      'to_do_text': td.todoName,
+      'to_do_prio': td.priority,
+    });
     _todolist[_todolist.indexWhere((element) => element.id == td.id)] = td;
     sortTodolist();
     notifyListeners();
   }
 
   void deleteTodo(ToDo td) {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('to_dos')
+        .doc(td.id)
+        .delete();
     _todolist.removeWhere((element) => element.id == td.id);
     sortTodolist();
     notifyListeners();

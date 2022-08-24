@@ -1,10 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/models/todo_operation.dart';
-import 'package:to_do_list/screen/register_screen.dart';
 import 'package:to_do_list/widget/empty_todo.dart';
 
 import 'add_todo_bottom_sheet.dart';
@@ -59,7 +58,10 @@ class TodoBox extends StatelessWidget {
                   width: constraints.maxWidth,
                   alignment: Alignment.center,
                   child: todoData.todolist.isEmpty
-                      ? EmptyTodo()
+                      ? EmptyTodo(
+                          availableHeight: constraints.maxHeight * 0.7,
+                          availableWidth: constraints.maxWidth,
+                        )
                       : ListView.builder(
                           itemCount: todoData.todoCount,
                           itemBuilder: (context, index) {

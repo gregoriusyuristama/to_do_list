@@ -52,14 +52,16 @@ class DefaultFirebaseOptions {
     messagingSenderId: '672727875549',
     projectId: 'todoi-todolist',
     authDomain: 'todoi-todolist.firebaseapp.com',
+    databaseURL: 'https://todoi-todolist-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'todoi-todolist.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBuB8ufEJj95Pcs_iGEXV_Obm4M4N444zo',
-    appId: '1:672727875549:android:5ee413b0ca625451c8c034',
+    appId: '1:672727875549:android:315da4ef42485dd0c8c034',
     messagingSenderId: '672727875549',
     projectId: 'todoi-todolist',
+    databaseURL: 'https://todoi-todolist-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'todoi-todolist.appspot.com',
   );
 
@@ -68,6 +70,7 @@ class DefaultFirebaseOptions {
     appId: '1:672727875549:ios:76f3d1614fc18939c8c034',
     messagingSenderId: '672727875549',
     projectId: 'todoi-todolist',
+    databaseURL: 'https://todoi-todolist-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'todoi-todolist.appspot.com',
     androidClientId: '672727875549-epbmi1j69jgglfu77s2mupq2l4k3g582.apps.googleusercontent.com',
     iosClientId: '672727875549-n8fg5uke56uh0e9u53jhlvphc3g1tbv6.apps.googleusercontent.com',

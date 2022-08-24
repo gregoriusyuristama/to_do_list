@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 import 'package:flutter/services.dart';
+import 'package:to_do_list/screen/main_screen.dart';
+import 'package:to_do_list/screen/welcome_screen.dart';
 import 'firebase_options.dart';
 import 'screen/register_screen.dart';
 
@@ -61,7 +63,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'ToDoi',
         theme: appTheme,
-        home: RegisterScreen(),
+        home: WelcomeScreen(),
       ),
     );
   }

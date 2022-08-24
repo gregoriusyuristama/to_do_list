@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:to_do_list/screen/register_screen.dart';
+import 'package:to_do_list/screen/welcome_screen.dart';
+import 'package:to_do_list/utils/authentication.dart';
 
 const textGreetings = 'Hi,';
 
@@ -35,12 +36,12 @@ class Greetings extends StatelessWidget {
               width: constraints.maxWidth * 0.1,
               alignment: Alignment.centerLeft,
               child: IconButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
+                onPressed: () async {
+                  await Authentication.signOut(context: context);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RegisterScreen(),
+                      builder: (context) => WelcomeScreen(),
                     ),
                   );
                 },

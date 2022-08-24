@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_list/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 
 import '../models/todo.dart';
@@ -38,41 +39,24 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
           'Add New To-Do-List',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Color.fromRGBO(75, 191, 221, 1.0),
+            color: kDefaultColor,
             fontWeight: FontWeight.bold,
             fontSize: 20.0,
           ),
         ),
-        // Divider(
-        //   thickness: 2.0,
-        //   color: Color.fromRGBO(75, 191, 221, 1.0),
-        // ),
+        Divider(
+          thickness: 2.0,
+          color: kDefaultColor,
+        ),
         TextField(
-          decoration: InputDecoration(
-              focusedBorder: UnderlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(75, 191, 221, 1.0)),
-              ),
-              focusColor: Color.fromRGBO(75, 191, 221, 1.0),
-              labelText: 'Your To-do-list : ',
-              // labelStyle: TextStyle(color: Color.fromRGBO(75, 191, 221, 1.0)),
-              floatingLabelStyle:
-                  TextStyle(color: Color.fromRGBO(75, 191, 221, 1.0)),
-              border: UnderlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(75, 191, 221, 1.0)),
-              )
-              // labelStyle: TextStyle(fontWeight: FontWeight.bold),
-              ),
-
+          decoration: kBottomSheetFieldDecoration.copyWith(
+              labelText: 'Your To-Do-List'),
           style: TextStyle(
             fontWeight: FontWeight.normal,
           ),
-          cursorColor: Color.fromRGBO(75, 191, 221, 1.0),
+          cursorColor: kDefaultColor,
           controller: _myTextController,
-
-          // scrollPadding: EdgeInsets.only(bottom: 25),
-          // autofocus: true,
+          autofocus: true,
         ),
         SizedBox(
           height: 30,
@@ -112,7 +96,8 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
         Consumer<TodoOperation>(
           builder: (context, todoData, child) => ElevatedButton(
             style: ElevatedButton.styleFrom(
-                primary: Color.fromRGBO(75, 191, 221, 1.0)),
+              primary: kDefaultColor,
+            ),
             onPressed: () {
               todoData.addTodo(_myTextController.text, prio);
               Navigator.pop(context);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_list/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 
 import '../models/todo.dart';
@@ -45,15 +46,15 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
           'Edit To-Do-List',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Color.fromRGBO(75, 191, 221, 1.0),
+            color: kDefaultColor,
             fontWeight: FontWeight.bold,
             fontSize: 20.0,
           ),
         ),
-        // Divider(
-        //   thickness: 2.0,
-        //   color: Colors.black,
-        // ),
+        Divider(
+          thickness: 2.0,
+          color: kDefaultColor,
+        ),
         TextField(
           decoration: InputDecoration(
             focusedBorder: UnderlineInputBorder(
@@ -63,13 +64,11 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                 TextStyle(backgroundColor: Color.fromRGBO(75, 191, 221, 1.0)),
             fillColor: Color.fromRGBO(75, 191, 221, 1.0),
             labelText: 'Your To-do-list : ',
-            // labelStyle: TextStyle(color: Color.fromRGBO(75, 191, 221, 1.0)),
             floatingLabelStyle: TextStyle(color: labelTextColour),
           ),
           style: TextStyle(
             fontWeight: FontWeight.normal,
           ),
-
           cursorColor: Color.fromRGBO(75, 191, 221, 1.0),
           controller: _myTextController,
           onSubmitted: (value) {
@@ -82,9 +81,6 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
               labelTextColour = Color.fromRGBO(75, 191, 221, 1.0);
             });
           },
-
-          // scrollPadding: EdgeInsets.only(bottom: 25),
-          // autofocus: true,
         ),
         SizedBox(
           height: 30,

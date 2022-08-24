@@ -31,6 +31,7 @@ class MainScreen extends StatelessWidget {
     final availableHeight = (mediaQuery.size.height - mediaQuery.padding.top);
     final bottomPadding = EdgeInsets.only(bottom: mediaQuery.padding.bottom);
     final availableWidth = mediaQuery.size.width;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
