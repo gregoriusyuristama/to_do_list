@@ -3,8 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_list/firebase_options.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 import 'package:to_do_list/screen/main_screen.dart';
+import 'dart:io';
 
 class Authentication {
   static Future<FirebaseApp> initializeFirebase(
@@ -27,7 +29,11 @@ class Authentication {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
 
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: Platform.isIOS
+          ? DefaultFirebaseOptions.ios.iosClientId
+          : DefaultFirebaseOptions.currentPlatform.androidClientId,
+    );
 
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
@@ -66,8 +72,11 @@ class Authentication {
   }
 
   static Future<void> signOut({required BuildContext context}) async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: Platform.isIOS
+          ? DefaultFirebaseOptions.ios.iosClientId
+          : DefaultFirebaseOptions.currentPlatform.androidClientId,
+    );
     try {
       await googleSignIn.signOut();
       await FirebaseAuth.instance.signOut();

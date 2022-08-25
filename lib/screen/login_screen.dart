@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:provider/provider.dart';
 import 'package:to_do_list/constants.dart';
+import 'package:to_do_list/models/todo_operation.dart';
 import 'package:to_do_list/screen/main_screen.dart';
 import 'package:to_do_list/screen/register_screen.dart';
+import 'package:to_do_list/utils/authentication.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,9 +14,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController controllerEmail = TextEditingController();
+  TextEditingController controllerPassword = TextEditingController();
+  final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
-  late String email;
-  late String password;
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -70,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             cursorColor: kDefaultColor,
                             keyboardType: TextInputType.emailAddress,
-                            onChanged: (value) => email = value,
+                            controller: controllerEmail,
                           ),
                           SizedBox(
                             height: 15.0,
@@ -83,45 +87,59 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontWeight: FontWeight.normal,
                             ),
                             cursorColor: kDefaultColor,
-                            onChanged: (value) => password = value,
+                            controller: controllerPassword,
                             obscureText: true,
                           ),
                           SizedBox(
                             height: 10.0,
                           ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              try {
-                                setState(() {
-                                  showSpinner = true;
-                                });
-                                final user = await FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(
-                                  email: email,
-                                  password: password,
-                                );
-                                if (user != null) {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MainScreen(),
-                                      ));
+                          Consumer<TodoOperation>(
+                            builder: (context, todoData, child) =>
+                                ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  setState(() {
+                                    showSpinner = true;
+                                  });
+                                  await _auth.signInWithEmailAndPassword(
+                                    email: controllerEmail.text,
+                                    password: controllerPassword.text,
+                                  );
+                                  FirebaseAuth.instance
+                                      .idTokenChanges()
+                                      .listen((User? user) {
+                                    if (user != null) {
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                Consumer<TodoOperation>(builder:
+                                                    (context, todoData, child) {
+                                              todoData.setTodolist();
+                                              return MainScreen();
+                                            }),
+                                          ));
+                                    }
+                                  });
+
+                                  setState(() {
+                                    showSpinner = false;
+                                  });
+                                } catch (e) {
+                                  print(e.toString());
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   SnackBar(
+                                  //     content: Text(
+                                  //       e.toString(),
+                                  //     ),
+                                  //   ),
+                                  // );
                                 }
-                                showSpinner = false;
-                              } catch (e) {
-                                showSpinner = false;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      e.toString(),
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            child: Text('Login'),
-                            style: ElevatedButton.styleFrom(
-                              primary: Color.fromRGBO(75, 191, 221, 1.0),
+                              },
+                              child: Text('Login'),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color.fromRGBO(75, 191, 221, 1.0),
+                              ),
                             ),
                           ),
                         ],

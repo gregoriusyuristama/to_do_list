@@ -25,25 +25,33 @@ class TodoOperation with ChangeNotifier {
 
   Future<void> setTodolist() async {
     List<ToDo> listTodo = [];
-    await FirebaseFirestore.instance
-        .collection('user')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('to_dos')
-        .get()
-        .then((value) {
-      for (var data in value.docs) {
-        listTodo.add(ToDo(
-          id: data.data()['to_do_id'],
-          todoName: data.data()['to_do_text'],
-          priority: data.data()['to_do_prio'],
-          todoDone: data.data()['to_do_done'],
-        ));
-      }
-      _todolist = listTodo;
-    });
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(currentUser.uid)
+          .collection('to_dos')
+          .get()
+          .then((value) {
+        for (var data in value.docs) {
+          listTodo.add(ToDo(
+            id: data.data()['to_do_id'],
+            todoName: data.data()['to_do_text'],
+            priority: data.data()['to_do_prio'],
+            todoDone: data.data()['to_do_done'],
+          ));
+        }
+        _todolist = listTodo;
+      });
+    } else {
+      return;
+    }
     sortTodolist();
     notifyListeners();
-    return;
+  }
+
+  void clearTodoList() {
+    _todolist = [];
   }
 
   void sortTodolist() {

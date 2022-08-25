@@ -16,12 +16,6 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
   Color? colour = Colors.grey[700];
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   void dispose() {
     // TODO: implement dispose
     _myTextController.dispose();
@@ -56,7 +50,6 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
           ),
           cursorColor: kDefaultColor,
           controller: _myTextController,
-          autofocus: true,
         ),
         SizedBox(
           height: 30,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_list/models/todo_operation.dart';
 import 'package:to_do_list/screen/register_screen.dart';
 import 'package:to_do_list/screen/welcome_screen.dart';
 import 'package:to_do_list/utils/authentication.dart';
@@ -35,19 +37,22 @@ class Greetings extends StatelessWidget {
               height: constraints.maxHeight * 0.7,
               width: constraints.maxWidth * 0.1,
               alignment: Alignment.centerLeft,
-              child: IconButton(
-                onPressed: () async {
-                  await Authentication.signOut(context: context);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WelcomeScreen(),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  FontAwesomeIcons.signOut,
-                  color: Colors.white,
+              child: Consumer<TodoOperation>(
+                builder: (context, todoData, child) => IconButton(
+                  onPressed: () async {
+                    await Authentication.signOut(context: context);
+                    todoData.clearTodoList();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WelcomeScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    FontAwesomeIcons.signOut,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
