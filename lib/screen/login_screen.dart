@@ -1,12 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:provider/provider.dart';
-import 'package:to_do_list/constants.dart';
+import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 import 'package:to_do_list/screen/main_screen.dart';
-import 'package:to_do_list/screen/register_screen.dart';
-import 'package:to_do_list/utils/authentication.dart';
+import 'package:to_do_list/utils/validation.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,141 +13,186 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController controllerEmail = TextEditingController();
-  TextEditingController controllerPassword = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
   final _auth = FirebaseAuth.instance;
-  bool showSpinner = false;
+
+  bool _emailValidated = true;
+  bool _passwordValidated = true;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controllerEmail.dispose();
+    _controllerPassword.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final availableHeight = (mediaQuery.size.height - mediaQuery.padding.top);
-    final bottomPadding =
-        EdgeInsets.only(bottom: mediaQuery.padding.bottom + 100);
-    final availableWidth = mediaQuery.size.width;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color.fromRGBO(75, 191, 221, 1.0),
-              Color.fromRGBO(138, 218, 237, 1.0),
-            ],
-          )),
-          width: mediaQuery.size.width,
-          height: mediaQuery.size.height,
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Login',
-                    style: Theme.of(context).textTheme.headline1,
-                    textAlign: TextAlign.left,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(25.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextField(
-                            decoration: kRegisterFieldDecoration.copyWith(
-                                labelText: 'E-mail'),
-                            style: TextStyle(
-                              color: kDefaultColor,
-                              fontWeight: FontWeight.normal,
+      body: Container(
+        decoration: kDefaultBackgroundDecoration,
+        width: mediaQuery.size.width,
+        height: mediaQuery.size.height,
+        child: SafeArea(
+          child: ProgressHUD(
+            child: Builder(builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Login',
+                      style: Theme.of(context).textTheme.headline1,
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Material(
+                      elevation: 10,
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(25.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextField(
+                              decoration:
+                                  kRegisterFieldDecoration(!_emailValidated)
+                                      .copyWith(
+                                labelText: 'E-mail',
+                                errorText: !_emailValidated
+                                    ? 'Please enter valid email address'
+                                    : null,
+                              ),
+                              style: kTextFieldTextStyle,
+                              cursorColor: kDefaultColor,
+                              keyboardType: TextInputType.emailAddress,
+                              controller: _controllerEmail,
+                              onChanged: (value) {
+                                setState(() {
+                                  _emailValidated =
+                                      Validation.validateEmail(value);
+                                });
+                              },
                             ),
-                            cursorColor: kDefaultColor,
-                            keyboardType: TextInputType.emailAddress,
-                            controller: controllerEmail,
-                          ),
-                          SizedBox(
-                            height: 15.0,
-                          ),
-                          TextField(
-                            decoration: kRegisterFieldDecoration.copyWith(
-                                labelText: 'Password'),
-                            style: TextStyle(
-                              color: kDefaultColor,
-                              fontWeight: FontWeight.normal,
+                            SizedBox(
+                              height: 15.0,
                             ),
-                            cursorColor: kDefaultColor,
-                            controller: controllerPassword,
-                            obscureText: true,
-                          ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          Consumer<TodoOperation>(
-                            builder: (context, todoData, child) =>
-                                ElevatedButton(
+                            TextField(
+                              decoration:
+                                  kRegisterFieldDecoration(!_passwordValidated)
+                                      .copyWith(
+                                labelText: 'Password',
+                                errorText: !_passwordValidated
+                                    ? 'Password require 6 characters'
+                                    : null,
+                              ),
+                              style: kTextFieldTextStyle,
+                              cursorColor: kDefaultColor,
+                              controller: _controllerPassword,
+                              obscureText: true,
+                              onChanged: (value) {
+                                setState(() {
+                                  _passwordValidated =
+                                      Validation.validatePassword(value);
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            ElevatedButton(
                               onPressed: () async {
-                                try {
-                                  setState(() {
-                                    showSpinner = true;
-                                  });
-                                  await _auth.signInWithEmailAndPassword(
-                                    email: controllerEmail.text,
-                                    password: controllerPassword.text,
-                                  );
-                                  FirebaseAuth.instance
-                                      .idTokenChanges()
-                                      .listen((User? user) {
-                                    if (user != null) {
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                Consumer<TodoOperation>(builder:
-                                                    (context, todoData, child) {
-                                              todoData.setTodolist();
-                                              return MainScreen();
-                                            }),
-                                          ));
-                                    }
-                                  });
+                                setState(() {
+                                  _emailValidated = Validation.validateEmail(
+                                      _controllerEmail.text);
+                                  _passwordValidated =
+                                      Validation.validatePassword(
+                                          _controllerPassword.text);
+                                });
+                                if (_emailValidated && _passwordValidated) {
+                                  final progress = ProgressHUD.of(context);
+                                  try {
+                                    progress?.show();
+                                    await _auth.signInWithEmailAndPassword(
+                                      email: _controllerEmail.text,
+                                      password: _controllerPassword.text,
+                                    );
 
-                                  setState(() {
-                                    showSpinner = false;
-                                  });
-                                } catch (e) {
-                                  print(e.toString());
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   SnackBar(
-                                  //     content: Text(
-                                  //       e.toString(),
-                                  //     ),
-                                  //   ),
-                                  // );
+                                    await Provider.of<TodoOperation>(context,
+                                            listen: false)
+                                        .setTodolist(context: context);
+                                    Navigator.popUntil(
+                                        context, (route) => route.isFirst);
+                                    Navigator.pushReplacement(context,
+                                        MaterialPageRoute(
+                                      builder: (context) {
+                                        return MainScreen();
+                                      },
+                                    ));
+
+                                    progress?.dismiss();
+                                  } catch (e) {
+                                    progress?.dismiss();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          e.toString(),
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 }
                               },
-                              child: Text('Login'),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color.fromRGBO(75, 191, 221, 1.0),
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
                               ),
+                              style: ElevatedButton.styleFrom(
+                                primary: kDefaultColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15),
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            'Back to Welcome Screen',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
+                      style: TextButton.styleFrom(
+                        primary: kDefaultColor,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
+                  ],
+                ),
+              );
+            }),
           ),
         ),
       ),
