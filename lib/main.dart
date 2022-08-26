@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 import 'package:flutter/services.dart';
-import 'package:to_do_list/screen/main_screen.dart';
 import 'package:to_do_list/screen/welcome_screen.dart';
 import 'firebase_options.dart';
-import 'screen/register_screen.dart';
+import 'utils/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,8 +19,9 @@ Future<void> main() async {
 
 var appTheme = ThemeData(
   fontFamily: 'Poppins',
-  primaryColor: Color.fromRGBO(138, 218, 237, 1.0),
-  androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
+  primaryColor: kDefaultColor,
+  // androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
+  useMaterial3: true,
   textTheme: const TextTheme(
     headline2: TextStyle(
       color: Colors.white,

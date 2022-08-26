@@ -9,7 +9,7 @@ class EmptyTodo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: availableHeight,
       width: availableWidth,
       child: Center(
@@ -18,10 +18,12 @@ class EmptyTodo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              FontAwesomeIcons.noteSticky,
-              color: Colors.grey[400],
-              size: 100,
+            FittedBox(
+              child: Icon(
+                FontAwesomeIcons.noteSticky,
+                color: Colors.grey[400],
+                size: 100,
+              ),
             ),
             Text(
               'Your To Do List is Empty\nLet\'s Create New To Do !',

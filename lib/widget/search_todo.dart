@@ -35,7 +35,7 @@ class SearchTodo extends StatelessWidget {
               ),
             ),
           ),
-          Center(
+          const Center(
             child: FittedBox(
               child: Text(
                 'Search To-do-list..',

@@ -12,16 +12,25 @@ class Authentication {
   static Future<FirebaseApp> initializeFirebase(
       {required BuildContext context}) async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) =>
-            Consumer<TodoOperation>(builder: (context, todoData, child) {
-          todoData.setTodolist();
-          return MainScreen();
-        }),
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await Provider.of<TodoOperation>(context, listen: false)
+            .setTodolist(context: context);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) {
+              return MainScreen();
+            },
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(Authentication.customSnackBar(
+        content: e.toString(),
       ));
     }
+
     return firebaseApp;
   }
 
@@ -49,6 +58,8 @@ class Authentication {
         final UserCredential userCredential =
             await auth.signInWithCredential(credential);
         user = userCredential.user;
+        await Provider.of<TodoOperation>(context, listen: false)
+            .setTodolist(context: context);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           ScaffoldMessenger.of(context)

@@ -45,13 +45,12 @@ class TodoCard extends StatelessWidget {
                 MediaQuery.of(context).viewInsets.left + 25,
                 MediaQuery.of(context).viewInsets.top + 25,
                 MediaQuery.of(context).viewInsets.right + 25,
-                MediaQuery.of(context).viewInsets.bottom + 25,
+                MediaQuery.of(context).viewInsets.bottom,
               ),
               child: EditTodoBottomSheet(
                 todo: todo,
               ),
             );
-            ;
           }),
         ),
         child: Container(
@@ -64,7 +63,7 @@ class TodoCard extends StatelessWidget {
                 flex: 2,
                 child: Padding(
                   padding: contentPadding,
-                  child: cardContent(todo),
+                  child: CardContent(todo),
                 ),
               ),
               Expanded(

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:to_do_list/constants.dart';
-import 'package:to_do_list/screen/login_screen.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:to_do_list/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:to_do_list/screen/main_screen.dart';
-import 'package:to_do_list/utils/authentication.dart';
-
-import '../widget/google_sign_in_button.dart';
+import 'package:to_do_list/utils/validation.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -15,139 +12,243 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late String email;
-  late String password;
-  late String name;
-  bool showSpinner = false;
+  final TextEditingController _controllerName = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerVerifyPassword =
+      TextEditingController();
+  bool _validateName = true;
+  bool _validateEmail = true;
+  bool _validatePassword = true;
+  bool _validateVerifyPassword = true;
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _controllerEmail.dispose();
+    _controllerName.dispose();
+    _controllerPassword.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final availableHeight = (mediaQuery.size.height - mediaQuery.padding.top);
-    final bottomPadding =
-        EdgeInsets.only(bottom: mediaQuery.padding.bottom + 100);
-    final availableWidth = mediaQuery.size.width;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color.fromRGBO(75, 191, 221, 1.0),
-                Color.fromRGBO(138, 218, 237, 1.0),
-              ],
-            ),
-          ),
-          width: mediaQuery.size.width,
-          height: mediaQuery.size.height,
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Registration',
-                    style: Theme.of(context).textTheme.headline1,
-                    textAlign: TextAlign.left,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(25.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextField(
-                            decoration: kRegisterFieldDecoration.copyWith(
-                                labelText: 'Name'),
-                            style: kRegisterTextStyleDecoration,
-                            cursorColor: kDefaultColor,
-                            onChanged: (value) => name = value,
-                            keyboardType: TextInputType.name,
-                          ),
-                          SizedBox(
-                            height: 15.0,
-                          ),
-                          TextField(
-                            decoration: kRegisterFieldDecoration.copyWith(
-                                labelText: 'Email'),
-                            style: kRegisterTextStyleDecoration,
-                            cursorColor: kDefaultColor,
-                            onChanged: (value) => email = value,
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                          SizedBox(
-                            height: 15.0,
-                          ),
-                          TextField(
-                            decoration: kRegisterFieldDecoration.copyWith(
-                                labelText: 'Password'),
-                            style: kRegisterTextStyleDecoration,
-                            cursorColor: kDefaultColor,
-                            onChanged: (value) => password = value,
-                            obscureText: true,
-                          ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              setState(() {
-                                showSpinner = true;
-                              });
-                              try {
-                                final result =
-                                    await _auth.createUserWithEmailAndPassword(
-                                        email: email, password: password);
-                                User? user = result.user;
-                                await user?.updateDisplayName(name);
-
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MainScreen(),
-                                  ),
-                                );
-                                setState(() {
-                                  showSpinner = false;
-                                });
-                              } catch (e) {
-                                print(e);
-                              }
-                            },
-                            child: Text('Register'),
-                            style: ElevatedButton.styleFrom(
-                              primary: kDefaultColor,
-                            ),
-                          ),
-                        ],
+      body: ProgressHUD(
+        child: Builder(builder: (context) {
+          return Container(
+            decoration: kDefaultBackgroundDecoration,
+            width: mediaQuery.size.width,
+            height: mediaQuery.size.height,
+            child: SafeArea(
+              child: Container(
+                padding: const EdgeInsets.all(25.0),
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Registration',
+                        style: Theme.of(context).textTheme.headline1,
+                        textAlign: TextAlign.left,
                       ),
-                    ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Material(
+                        elevation: 10,
+                        borderRadius: BorderRadius.circular(20.0),
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(25.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              TextField(
+                                decoration:
+                                    kRegisterFieldDecoration(!_validateName)
+                                        .copyWith(
+                                  labelText: 'Name',
+                                  errorText: _validateName
+                                      ? null
+                                      : 'Name cannot be empty',
+                                ),
+                                style: kRegisterTextStyleDecoration,
+                                cursorColor: kDefaultColor,
+                                controller: _controllerName,
+                                keyboardType: TextInputType.name,
+                              ),
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              TextField(
+                                decoration:
+                                    kRegisterFieldDecoration(!_validateEmail)
+                                        .copyWith(
+                                  labelText: 'Email',
+                                  errorText: _validateEmail
+                                      ? null
+                                      : 'Please enter valid email address',
+                                ),
+                                style: kRegisterTextStyleDecoration,
+                                cursorColor: kDefaultColor,
+                                controller: _controllerEmail,
+                                keyboardType: TextInputType.emailAddress,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _validateEmail =
+                                        Validation.validateEmail(value);
+                                  });
+                                },
+                              ),
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              TextField(
+                                decoration:
+                                    kRegisterFieldDecoration(!_validatePassword)
+                                        .copyWith(
+                                  labelText: 'Password',
+                                  errorText: _validatePassword
+                                      ? null
+                                      : 'Password require 6 characters',
+                                ),
+                                style: kRegisterTextStyleDecoration,
+                                cursorColor: kDefaultColor,
+                                controller: _controllerPassword,
+                                obscureText: true,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _validatePassword =
+                                        Validation.validatePassword(value);
+                                  });
+                                },
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              TextField(
+                                decoration: kRegisterFieldDecoration(
+                                        !_validateVerifyPassword)
+                                    .copyWith(
+                                  labelText: 'Verify Password',
+                                  errorText: _validateVerifyPassword
+                                      ? null
+                                      : 'Password is not equal',
+                                ),
+                                style: kRegisterTextStyleDecoration,
+                                cursorColor: kDefaultColor,
+                                controller: _controllerVerifyPassword,
+                                obscureText: true,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _validateVerifyPassword =
+                                        (_controllerPassword.text == value);
+                                  });
+                                },
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    _validateName =
+                                        _controllerName.text.isNotEmpty;
+                                    _validateEmail = Validation.validateEmail(
+                                        _controllerEmail.text);
+                                    _validatePassword =
+                                        Validation.validatePassword(
+                                            _controllerPassword.text);
+                                    _validateVerifyPassword =
+                                        (_controllerPassword.text ==
+                                            _controllerVerifyPassword.text);
+                                  });
+                                  if (_validateName &&
+                                      _validateEmail &&
+                                      _validatePassword &&
+                                      _validateVerifyPassword) {
+                                    final progress = ProgressHUD.of(context);
+                                    progress?.show();
+                                    try {
+                                      final result = await _auth
+                                          .createUserWithEmailAndPassword(
+                                              email: _controllerEmail.text,
+                                              password:
+                                                  _controllerPassword.text);
+                                      User? user = result.user;
+                                      await user?.updateDisplayName(
+                                          _controllerName.text);
+                                      Navigator.popUntil(
+                                          context, (route) => route.isFirst);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MainScreen(),
+                                        ),
+                                      );
+                                      progress?.dismiss();
+                                    } catch (e) {
+                                      progress?.dismiss();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            e.toString(),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                                child: Text(
+                                  'Register',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  primary: kDefaultColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 15),
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Back to Welcome Screen',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        style: TextButton.styleFrom(
+                          primary: kDefaultColor,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:to_do_list/constants.dart';
+import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
-
-import '../models/todo.dart';
 
 class AddTodoBottomSheet extends StatefulWidget {
   @override
@@ -11,13 +9,12 @@ class AddTodoBottomSheet extends StatefulWidget {
 }
 
 class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
-  var _myTextController = TextEditingController();
-  int prio = 1;
-  Color? colour = Colors.grey[700];
-
+  final _myTextController = TextEditingController();
+  int _prio = 1;
+  Color? _colour = Colors.grey[700];
+  bool _validate = false;
   @override
   void dispose() {
-    // TODO: implement dispose
     _myTextController.dispose();
     super.dispose();
   }
@@ -44,7 +41,9 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
         ),
         TextField(
           decoration: kBottomSheetFieldDecoration.copyWith(
-              labelText: 'Your To-Do-List'),
+            labelText: 'Your To-Do-List',
+            errorText: _validate ? 'Value Can\'t be Empty' : null,
+          ),
           style: TextStyle(
             fontWeight: FontWeight.normal,
           ),
@@ -57,28 +56,28 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
         Text(
           'Priority : ',
           style: TextStyle(
-            color: colour,
+            color: _colour,
             fontWeight: FontWeight.normal,
           ),
           textAlign: TextAlign.left,
         ),
         Slider(
-          activeColor: Color.fromRGBO(75, 191, 221, 1.0),
-          value: prio.toDouble(),
-          label: prio.toInt().toString(),
+          activeColor: kDefaultColor,
+          value: _prio.toDouble(),
+          label: _prio.toInt().toString(),
           min: 1.0,
           max: 5.0,
           divisions: 4,
           onChangeEnd: (value) {
             setState(() {
-              colour = Colors.grey[700];
+              _colour = Colors.grey[700];
             });
           },
           onChanged: (double newValue) {
             setState(
               () {
-                colour = Color.fromRGBO(75, 191, 221, 1.0);
-                prio = newValue.toInt();
+                _colour = kDefaultColor;
+                _prio = newValue.toInt();
               },
             );
           },
@@ -86,16 +85,27 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
         SizedBox(
           height: 30,
         ),
-        Consumer<TodoOperation>(
-          builder: (context, todoData, child) => ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: kDefaultColor,
-            ),
-            onPressed: () {
-              todoData.addTodo(_myTextController.text, prio);
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: kDefaultColor,
+          ),
+          onPressed: () async {
+            setState(() {
+              _myTextController.text.isEmpty
+                  ? _validate = true
+                  : _validate = false;
+            });
+            if (!_validate) {
+              await Provider.of<TodoOperation>(context, listen: false)
+                  .addTodo(_myTextController.text, _prio);
               Navigator.pop(context);
-            },
-            child: Text('Add'),
+            }
+          },
+          child: Text(
+            'Add',
+            style: TextStyle(
+              color: Colors.white,
+            ),
           ),
         ),
       ],

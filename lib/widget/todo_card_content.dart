@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/todo.dart';
 
-class cardContent extends StatelessWidget {
-  cardContent(this.todo);
+class CardContent extends StatelessWidget {
+  CardContent(this.todo);
 
   final ToDo todo;
 

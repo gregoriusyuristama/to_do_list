@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:to_do_list/constants.dart';
+import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 
 import '../models/todo.dart';
@@ -17,15 +17,16 @@ class EditTodoBottomSheet extends StatefulWidget {
 }
 
 class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
-  int prio = 1;
-  Color? colour = Colors.grey[700];
-  Color? labelTextColour = Colors.grey[700];
+  int _prio = 1;
+  Color? _colour = Colors.grey[700];
+  Color? _labelTextColour = Colors.grey[700];
+  bool _validate = false;
 
   var _myTextController = TextEditingController();
   @override
   void initState() {
     _myTextController = TextEditingController(text: widget.todo.todoName);
-    prio = widget.todo.priority;
+    _prio = widget.todo.priority;
     super.initState();
   }
 
@@ -58,27 +59,27 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
         TextField(
           decoration: InputDecoration(
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color.fromRGBO(75, 191, 221, 1.0)),
+              borderSide: BorderSide(color: kDefaultColor),
             ),
-            hintStyle:
-                TextStyle(backgroundColor: Color.fromRGBO(75, 191, 221, 1.0)),
-            fillColor: Color.fromRGBO(75, 191, 221, 1.0),
+            hintStyle: TextStyle(backgroundColor: kDefaultColor),
+            fillColor: kDefaultColor,
             labelText: 'Your To-do-list : ',
-            floatingLabelStyle: TextStyle(color: labelTextColour),
+            errorText: _validate ? 'Value Can\'t be Empty' : null,
+            floatingLabelStyle: TextStyle(color: _labelTextColour),
           ),
           style: TextStyle(
             fontWeight: FontWeight.normal,
           ),
-          cursorColor: Color.fromRGBO(75, 191, 221, 1.0),
+          cursorColor: kDefaultColor,
           controller: _myTextController,
           onSubmitted: (value) {
             setState(() {
-              labelTextColour = Colors.grey[700];
+              _labelTextColour = Colors.grey[700];
             });
           },
           onTap: () {
             setState(() {
-              labelTextColour = Color.fromRGBO(75, 191, 221, 1.0);
+              _labelTextColour = kDefaultColor;
             });
           },
         ),
@@ -88,28 +89,28 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
         Text(
           'Priority : ',
           style: TextStyle(
-            color: colour,
+            color: _colour,
             fontWeight: FontWeight.normal,
           ),
           textAlign: TextAlign.left,
         ),
         Slider(
-          activeColor: Color.fromRGBO(75, 191, 221, 1.0),
-          value: prio.toDouble(),
-          label: prio.toInt().toString(),
+          activeColor: kDefaultColor,
+          value: _prio.toDouble(),
+          label: _prio.toInt().toString(),
           min: 1.0,
           max: 5.0,
           divisions: 4,
           onChangeEnd: (value) {
             setState(() {
-              colour = Colors.grey[700];
+              _colour = Colors.grey[700];
             });
           },
           onChanged: (double newValue) {
             setState(
               () {
-                colour = Color.fromRGBO(75, 191, 221, 1.0);
-                prio = newValue.toInt();
+                _colour = kDefaultColor;
+                _prio = newValue.toInt();
               },
             );
           },
@@ -117,40 +118,49 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
         SizedBox(
           height: 30,
         ),
-        Consumer<TodoOperation>(
-          builder: (context, todoData, child) => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.red,
-                  ),
-                  onPressed: () {
-                    todoData.deleteTodo(widget.todo);
-
-                    Navigator.pop(context);
-                  },
-                  child: Text('Remove'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  primary: Colors.red,
                 ),
+                onPressed: () async {
+                  await Provider.of<TodoOperation>(
+                    context,
+                    listen: false,
+                  ).deleteTodo(widget.todo);
+                  Navigator.pop(context);
+                },
+                child: Text('Remove'),
               ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
+            ),
+            Expanded(
+              child: TextButton(
+                onPressed: () async {
+                  setState(() {
+                    _myTextController.text.isEmpty
+                        ? _validate = true
+                        : _validate = false;
+                  });
+                  if (!_validate) {
                     widget.todo.todoName = _myTextController.text;
-                    widget.todo.priority = prio;
-                    todoData.updateTodo(widget.todo);
-
+                    widget.todo.priority = _prio;
+                    await Provider.of<TodoOperation>(
+                      context,
+                      listen: false,
+                    ).updateTodo(widget.todo);
                     Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Edit',
-                    style: TextStyle(color: Color.fromRGBO(75, 191, 221, 1.0)),
-                  ),
+                  }
+                },
+                child: Text(
+                  'Edit',
+                  style: TextStyle(color: kDefaultColor),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
