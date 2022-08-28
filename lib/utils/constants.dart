@@ -34,7 +34,7 @@ InputDecoration kRegisterFieldDecoration(bool isError) {
         color: Colors.red,
       ),
     ),
-    errorStyle: TextStyle(
+    errorStyle: const TextStyle(
       color: Colors.red,
     ),
   );

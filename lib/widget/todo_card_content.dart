@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/todo.dart';
 
 class CardContent extends StatelessWidget {
-  CardContent(this.todo);
+  const CardContent(this.todo, {Key? key}) : super(key: key);
 
   final ToDo todo;
 

@@ -5,6 +5,8 @@ import 'package:to_do_list/screen/main_screen.dart';
 import 'package:to_do_list/utils/authentication.dart';
 
 class GoogleSignInButton extends StatefulWidget {
+  const GoogleSignInButton({Key? key}) : super(key: key);
+
   @override
   State<GoogleSignInButton> createState() => _GoogleSignInButtonState();
 }
@@ -14,12 +16,12 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   @override
   Widget build(BuildContext context) {
     return _isSigningIn
-        ? CircularProgressIndicator(
+        ? const CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(kDefaultColor),
           )
         : ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: Size.fromHeight(40),
+              minimumSize: const Size.fromHeight(40),
               primary: kDefaultColor,
             ),
             onPressed: () async {
@@ -49,26 +51,24 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
               }
             },
             child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-              child: FittedBox(
-                child: Row(
-                  children: const [
-                    Image(
-                      image: AssetImage("assets/images/google_logo.png"),
-                      height: 20.0,
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: Row(
+                children: const [
+                  Image(
+                    image: AssetImage("assets/images/google_logo.png"),
+                    height: 20.0,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Text(
+                      'Login with Google',
+                      style: TextStyle(
+                          // fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.normal),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        'Login with Google',
-                        style: TextStyle(
-                            // fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );

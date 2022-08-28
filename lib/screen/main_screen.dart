@@ -10,6 +10,8 @@ late User loggedInUser;
 class MainScreen extends StatelessWidget {
   final auth = FirebaseAuth.instance;
 
+  MainScreen({Key? key}) : super(key: key);
+
   String firstName(String name) {
     List<String> nameList = name.split(" ");
     if (nameList.isNotEmpty) {
@@ -26,8 +28,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final availableHeight = (mediaQuery.size.height - mediaQuery.padding.top);
-    final bottomPadding = EdgeInsets.only(bottom: mediaQuery.padding.bottom);
-
+    final user = auth.currentUser;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
@@ -46,14 +47,14 @@ class MainScreen extends StatelessWidget {
                   height: 100,
                   child: Greetings(
                     firstName(
-                      auth.currentUser!.displayName.toString(),
+                      user == null ? 'Guest' : user.displayName.toString(),
                     ),
                   ),
                 ),
                 SizedBox(
                   height: availableHeight * 0.025,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                   child: TodoCounter(),
                 ),
@@ -64,9 +65,9 @@ class MainScreen extends StatelessWidget {
                 SizedBox(
                   height: availableHeight * 0.025,
                 ),
-                Expanded(
+                const Expanded(
                   flex: 11,
-                  child: TodoBox(),
+                  child: Hero(tag: 'cardContainer', child: TodoBox()),
                 ),
               ],
             ),

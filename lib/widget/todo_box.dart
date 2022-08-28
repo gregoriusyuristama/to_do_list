@@ -17,6 +17,8 @@ const titleWidgetCardPadding = EdgeInsets.only(
 );
 
 class TodoBox extends StatelessWidget {
+  const TodoBox({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final todoData = Provider.of<TodoOperation>(context);
@@ -93,7 +95,7 @@ class TodoBox extends StatelessWidget {
                                 MediaQuery.of(context).viewInsets.right + 25,
                                 MediaQuery.of(context).viewInsets.bottom + 25,
                               ),
-                              child: AddTodoBottomSheet(),
+                              child: const AddTodoBottomSheet(),
                             ),
                           );
                         }),

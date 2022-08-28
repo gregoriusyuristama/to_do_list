@@ -8,9 +8,9 @@ import 'package:to_do_list/utils/authentication.dart';
 const textGreetings = 'Hi,';
 
 class Greetings extends StatelessWidget {
-  Greetings(this.name);
+  const Greetings(this.name, {Key? key}) : super(key: key);
 
-  String name;
+  final String name;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -44,11 +44,11 @@ class Greetings extends StatelessWidget {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => WelcomeScreen(),
+                      builder: (context) => const WelcomeScreen(),
                     ),
                   );
                 },
-                icon: Icon(
+                icon: const Icon(
                   FontAwesomeIcons.arrowRightFromBracket,
                   color: Colors.white,
                 ),

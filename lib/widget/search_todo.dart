@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class SearchTodo extends StatelessWidget {
-  double availableHeight;
-  double availableWidth;
+  final double availableHeight;
+  final double availableWidth;
 
-  SearchTodo(this.availableWidth, this.availableHeight);
+  const SearchTodo(this.availableWidth, this.availableHeight, {Key? key})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,8 +18,8 @@ class SearchTodo extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            margin: EdgeInsets.all(5),
-            decoration: BoxDecoration(
+            margin: const EdgeInsets.all(5),
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
               // borderRadius: BorderRadius.circular(50),
               color: Colors.transparent,

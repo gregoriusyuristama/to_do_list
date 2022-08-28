@@ -43,8 +43,7 @@ dependencies:
   flutter_launcher_icons: ^0.10.0
   flutter_app_name: ^0.1.1
   flutter_progress_hud: ^2.0.2
-
-
+  animated_text_kit: ^4.2.2
 
 
 dev_dependencies:

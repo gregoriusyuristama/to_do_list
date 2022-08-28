@@ -8,7 +8,12 @@ import 'package:to_do_list/models/todo_operation.dart';
 import 'package:to_do_list/screen/main_screen.dart';
 import 'dart:io';
 
+import 'authentication_exception.dart';
+
 class Authentication {
+  static final _auth = FirebaseAuth.instance;
+  static var _status = AuthStatus.unknown;
+
   static Future<FirebaseApp> initializeFirebase(
       {required BuildContext context}) async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
@@ -32,6 +37,44 @@ class Authentication {
     }
 
     return firebaseApp;
+  }
+
+  static Future<AuthStatus> createAccount({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
+    try {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      _auth.currentUser!.updateDisplayName(name);
+      _status = AuthStatus.successful;
+    } on FirebaseAuthException catch (e) {
+      _status = AuthExceptionHandler.handleAuthException(e);
+    }
+    return _status;
+  }
+
+  static Future<AuthStatus> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      _status = AuthStatus.successful;
+    } on FirebaseAuthException catch (e) {
+      _status = AuthExceptionHandler.handleAuthException(e);
+    }
+    return _status;
+  }
+
+  static Future<AuthStatus> resetPassword({required String email}) async {
+    await _auth
+        .sendPasswordResetEmail(email: email)
+        .then((value) => _status = AuthStatus.successful)
+        .catchError(
+            (e) => _status = AuthExceptionHandler.handleAuthException(e));
+    return _status;
   }
 
   static Future<User?> signInWithGoogle({required BuildContext context}) async {
@@ -105,7 +148,7 @@ class Authentication {
       backgroundColor: Colors.black,
       content: Text(
         content,
-        style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+        style: const TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
       ),
     );
   }

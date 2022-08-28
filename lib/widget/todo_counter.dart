@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 
 var backgroundCardDecoration = BoxDecoration(
-  color: Color.fromRGBO(246, 164, 97, 1.0),
+  color: const Color.fromRGBO(246, 164, 97, 1.0),
   borderRadius: BorderRadius.circular(50),
 );
 
@@ -27,6 +27,8 @@ const titleTextStyle = TextStyle(
 );
 
 class TodoCounter extends StatelessWidget {
+  const TodoCounter({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TodoOperation>(
@@ -42,7 +44,7 @@ class TodoCounter extends StatelessWidget {
               height: counterCardHeight,
               child: counterText(todoData.todoCount.toString()),
             ),
-            SizedBox(
+            const SizedBox(
               width: sizedBoxWidth,
             ),
             textTitle('To Do List'),

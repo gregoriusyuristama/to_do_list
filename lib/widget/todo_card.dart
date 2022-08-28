@@ -20,11 +20,12 @@ var cardBoxDecorator = BoxDecoration(
 const contentPadding = EdgeInsets.only(left: 25.0);
 
 class TodoCard extends StatelessWidget {
-  double width;
-  double height;
-  ToDo todo;
-  Function doneTd;
-  TodoCard(this.width, this.height, this.todo, this.doneTd);
+  final double width;
+  final double height;
+  final ToDo todo;
+  final Function doneTd;
+  const TodoCard(this.width, this.height, this.todo, this.doneTd, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class TodoCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () => showModalBottomSheet(
           context: context,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(25.0),
             ),
@@ -45,7 +46,7 @@ class TodoCard extends StatelessWidget {
                 MediaQuery.of(context).viewInsets.left + 25,
                 MediaQuery.of(context).viewInsets.top + 25,
                 MediaQuery.of(context).viewInsets.right + 25,
-                MediaQuery.of(context).viewInsets.bottom,
+                MediaQuery.of(context).viewInsets.bottom + 10,
               ),
               child: EditTodoBottomSheet(
                 todo: todo,
@@ -60,13 +61,13 @@ class TodoCard extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Padding(
                   padding: contentPadding,
                   child: CardContent(todo),
                 ),
               ),
-              Expanded(
+              Flexible(
                 child: Consumer<TodoOperation>(
                   builder: (context, todoData, child) => IconButton(
                       icon: Icon(todo.todoDone

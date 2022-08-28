@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'ToDoi',
         theme: appTheme,
-        home: WelcomeScreen(),
+        home: const WelcomeScreen(),
       ),
     );
   }

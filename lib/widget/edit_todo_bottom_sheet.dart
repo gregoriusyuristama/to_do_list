@@ -6,11 +6,12 @@ import 'package:to_do_list/models/todo_operation.dart';
 import '../models/todo.dart';
 
 class EditTodoBottomSheet extends StatefulWidget {
-  EditTodoBottomSheet({
+  const EditTodoBottomSheet({
+    Key? key,
     required this.todo,
-  });
+  }) : super(key: key);
 
-  ToDo todo;
+  final ToDo todo;
 
   @override
   State<EditTodoBottomSheet> createState() => _EditTodoBottomSheet();
@@ -43,7 +44,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
+        const Text(
           'Edit To-Do-List',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -52,22 +53,22 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
             fontSize: 20.0,
           ),
         ),
-        Divider(
+        const Divider(
           thickness: 2.0,
           color: kDefaultColor,
         ),
         TextField(
           decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: kDefaultColor),
             ),
-            hintStyle: TextStyle(backgroundColor: kDefaultColor),
+            hintStyle: const TextStyle(backgroundColor: kDefaultColor),
             fillColor: kDefaultColor,
             labelText: 'Your To-do-list : ',
             errorText: _validate ? 'Value Can\'t be Empty' : null,
             floatingLabelStyle: TextStyle(color: _labelTextColour),
           ),
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.normal,
           ),
           cursorColor: kDefaultColor,
@@ -83,7 +84,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
             });
           },
         ),
-        SizedBox(
+        const SizedBox(
           height: 30,
         ),
         Text(
@@ -115,7 +116,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
             );
           },
         ),
-        SizedBox(
+        const SizedBox(
           height: 30,
         ),
         Row(
@@ -133,7 +134,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                   ).deleteTodo(widget.todo);
                   Navigator.pop(context);
                 },
-                child: Text('Remove'),
+                child: const Text('Remove'),
               ),
             ),
             Expanded(
@@ -154,7 +155,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text(
+                child: const Text(
                   'Edit',
                   style: TextStyle(color: kDefaultColor),
                 ),

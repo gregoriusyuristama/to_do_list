@@ -4,6 +4,8 @@ import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 
 class AddTodoBottomSheet extends StatefulWidget {
+  const AddTodoBottomSheet({Key? key}) : super(key: key);
+
   @override
   State<AddTodoBottomSheet> createState() => _AddTodoBottomSheetState();
 }
@@ -26,7 +28,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
+        const Text(
           'Add New To-Do-List',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -35,7 +37,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
             fontSize: 20.0,
           ),
         ),
-        Divider(
+        const Divider(
           thickness: 2.0,
           color: kDefaultColor,
         ),
@@ -44,13 +46,13 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
             labelText: 'Your To-Do-List',
             errorText: _validate ? 'Value Can\'t be Empty' : null,
           ),
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.normal,
           ),
           cursorColor: kDefaultColor,
           controller: _myTextController,
         ),
-        SizedBox(
+        const SizedBox(
           height: 30,
         ),
         Text(
@@ -82,7 +84,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
             );
           },
         ),
-        SizedBox(
+        const SizedBox(
           height: 30,
         ),
         ElevatedButton(
@@ -101,7 +103,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
               Navigator.pop(context);
             }
           },
-          child: Text(
+          child: const Text(
             'Add',
             style: TextStyle(
               color: Colors.white,
