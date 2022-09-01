@@ -7,13 +7,12 @@ import 'package:flutter/material.dart';
 import 'todo.dart';
 
 class TodoOperation with ChangeNotifier {
-  List<ToDo> _todolist = [
-    // ToDo(id: 't1', todoName: "Doing Homework", priority: 4, todoDone: true),
-    // ToDo(id: 't2', todoName: "Learn Programming", priority: 3, todoDone: false),
-    // ToDo(id: 't3', todoName: "Watch Films", priority: 2, todoDone: true),
-    // ToDo(id: 't4', todoName: "Workout", priority: 5, todoDone: true),
-    // ToDo(id: 't5', todoName: "Read Books", priority: 1, todoDone: false),
-  ];
+  List<ToDo> _todolist = [];
+
+  // final db = FirebaseFirestore.instance
+  //     .collection('user')
+  //     .doc(FirebaseAuth.instance.currentUser!.uid)
+  //     .collection('to_dos');
 
   int get todoCount {
     return _todolist.length;
@@ -29,7 +28,7 @@ class TodoOperation with ChangeNotifier {
       User? currentUser = FirebaseAuth.instance.currentUser;
       await FirebaseFirestore.instance
           .collection('user')
-          .doc(currentUser?.uid)
+          .doc(currentUser!.uid)
           .collection('to_dos')
           .get()
           .then((value) {
@@ -58,6 +57,7 @@ class TodoOperation with ChangeNotifier {
 
   void clearTodoList() {
     _todolist = [];
+    notifyListeners();
   }
 
   void sortTodolist() {
@@ -73,7 +73,7 @@ class TodoOperation with ChangeNotifier {
     });
   }
 
-  Future<void> addTodo(String todoText, int prio) async {
+  void addTodo(String todoText, int prio) {
     String todoId = DateTime.now().toString();
     _todolist.add(
       ToDo(
@@ -82,7 +82,7 @@ class TodoOperation with ChangeNotifier {
         priority: prio,
       ),
     );
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('to_dos')
@@ -97,9 +97,9 @@ class TodoOperation with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> doneTodo(ToDo td) async {
+  void doneTodo(ToDo td) {
     td.toggleDone();
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('to_dos')
@@ -111,8 +111,8 @@ class TodoOperation with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateTodo(ToDo td) async {
-    await FirebaseFirestore.instance
+  void updateTodo(ToDo td) {
+    FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('to_dos')
@@ -126,8 +126,8 @@ class TodoOperation with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteTodo(ToDo td) async {
-    await FirebaseFirestore.instance
+  void deleteTodo(ToDo td) {
+    FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('to_dos')

@@ -62,6 +62,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => TodoOperation(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'ToDoi',
         theme: appTheme,
         home: const WelcomeScreen(),

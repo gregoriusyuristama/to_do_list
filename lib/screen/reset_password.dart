@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:to_do_list/utils/authentication.dart';
@@ -102,6 +101,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       progress?.dismiss();
                                       Navigator.of(context)
                                           .popUntil((route) => route.isFirst);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  'Reset Password Link has been sent to Email ${_controllerEmail.text}')));
                                     } else {
                                       progress?.dismiss();
                                       final error = AuthExceptionHandler

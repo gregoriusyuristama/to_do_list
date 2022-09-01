@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,16 @@ class Authentication {
     return _status;
   }
 
+  static Future<AuthStatus> signInAnonymousely() async {
+    try {
+      await _auth.signInAnonymously();
+      _status = AuthStatus.successful;
+    } on FirebaseAuthException catch (e) {
+      _status = AuthExceptionHandler.handleAuthException(e);
+    }
+    return _status;
+  }
+
   static Future<AuthStatus> resetPassword({required String email}) async {
     await _auth
         .sendPasswordResetEmail(email: email)
@@ -126,20 +137,46 @@ class Authentication {
   }
 
   static Future<void> signOut({required BuildContext context}) async {
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: Platform.isIOS
-          ? DefaultFirebaseOptions.ios.iosClientId
-          : DefaultFirebaseOptions.currentPlatform.androidClientId,
-    );
-    try {
-      await googleSignIn.signOut();
-      await FirebaseAuth.instance.signOut();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        Authentication.customSnackBar(
-          content: 'Error signin out. Try again.',
-        ),
+    if (_auth.currentUser!.isAnonymous) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(_auth.currentUser!.uid)
+          .collection('to_dos')
+          .get()
+          .then(
+        (value) {
+          for (var element in value.docs) {
+            FirebaseFirestore.instance
+                .collection('user')
+                .doc(_auth.currentUser!.uid)
+                .collection('to_dos')
+                .doc(element.id)
+                .delete();
+          }
+        },
       );
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(_auth.currentUser!.uid)
+          .delete();
+      await _auth.currentUser!.delete();
+      await _auth.signOut();
+    } else {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: Platform.isIOS
+            ? DefaultFirebaseOptions.ios.iosClientId
+            : DefaultFirebaseOptions.currentPlatform.androidClientId,
+      );
+      try {
+        await googleSignIn.signOut();
+        await FirebaseAuth.instance.signOut();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          Authentication.customSnackBar(
+            content: 'Error signin out. Try again.',
+          ),
+        );
+      }
     }
   }
 

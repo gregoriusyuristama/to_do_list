@@ -47,7 +47,7 @@ class MainScreen extends StatelessWidget {
                   height: 100,
                   child: Greetings(
                     firstName(
-                      user == null ? 'Guest' : user.displayName.toString(),
+                      user!.isAnonymous ? 'Guest' : user.displayName.toString(),
                     ),
                   ),
                 ),
@@ -67,7 +67,7 @@ class MainScreen extends StatelessWidget {
                 ),
                 const Expanded(
                   flex: 11,
-                  child: Hero(tag: 'cardContainer', child: TodoBox()),
+                  child: TodoBox(),
                 ),
               ],
             ),

@@ -51,6 +51,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
           ),
           cursorColor: kDefaultColor,
           controller: _myTextController,
+          autofocus: true,
         ),
         const SizedBox(
           height: 30,
@@ -91,14 +92,14 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
           style: ElevatedButton.styleFrom(
             primary: kDefaultColor,
           ),
-          onPressed: () async {
+          onPressed: () {
             setState(() {
               _myTextController.text.isEmpty
                   ? _validate = true
                   : _validate = false;
             });
             if (!_validate) {
-              await Provider.of<TodoOperation>(context, listen: false)
+              Provider.of<TodoOperation>(context, listen: false)
                   .addTodo(_myTextController.text, _prio);
               Navigator.pop(context);
             }

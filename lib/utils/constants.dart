@@ -85,3 +85,7 @@ const kTextFieldTextStyle = TextStyle(
   color: kDefaultColor,
   fontWeight: FontWeight.normal,
 );
+
+const kDefaultTextColor = TextStyle(
+  color: kDefaultColor,
+);

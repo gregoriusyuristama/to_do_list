@@ -73,6 +73,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
           ),
           cursorColor: kDefaultColor,
           controller: _myTextController,
+          autofocus: true,
           onSubmitted: (value) {
             setState(() {
               _labelTextColour = Colors.grey[700];
@@ -127,8 +128,8 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                 style: TextButton.styleFrom(
                   primary: Colors.red,
                 ),
-                onPressed: () async {
-                  await Provider.of<TodoOperation>(
+                onPressed: () {
+                  Provider.of<TodoOperation>(
                     context,
                     listen: false,
                   ).deleteTodo(widget.todo);
@@ -139,7 +140,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
             ),
             Expanded(
               child: TextButton(
-                onPressed: () async {
+                onPressed: () {
                   setState(() {
                     _myTextController.text.isEmpty
                         ? _validate = true
@@ -148,7 +149,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                   if (!_validate) {
                     widget.todo.todoName = _myTextController.text;
                     widget.todo.priority = _prio;
-                    await Provider.of<TodoOperation>(
+                    Provider.of<TodoOperation>(
                       context,
                       listen: false,
                     ).updateTodo(widget.todo);

@@ -5,6 +5,8 @@ import 'package:to_do_list/models/todo_operation.dart';
 import 'package:to_do_list/screen/welcome_screen.dart';
 import 'package:to_do_list/utils/authentication.dart';
 
+import '../utils/constants.dart';
+
 const textGreetings = 'Hi,';
 
 class Greetings extends StatelessWidget {
@@ -38,15 +40,46 @@ class Greetings extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: IconButton(
                 onPressed: () async {
-                  await Authentication.signOut(context: context);
-                  Provider.of<TodoOperation>(context, listen: false)
-                      .clearTodoList();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const WelcomeScreen(),
+                  bool _confimation = false;
+                  await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Confirmation'),
+                      content: const Text(
+                        'Do you want to log out? ',
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context, 'Cancel');
+                            return;
+                          },
+                          child: const Text('Cancel', style: kDefaultTextColor),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            _confimation = true;
+                            Navigator.pop(context, 'OK');
+                          },
+                          child: const Text('OK', style: kDefaultTextColor),
+                        ),
+                      ],
                     ),
                   );
+                  if (_confimation) {
+                    await Authentication.signOut(context: context);
+                    Provider.of<TodoOperation>(context, listen: false)
+                        .clearTodoList();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WelcomeScreen(),
+                      ),
+                    );
+                  }
                 },
                 icon: const Icon(
                   FontAwesomeIcons.arrowRightFromBracket,
