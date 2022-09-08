@@ -6,7 +6,6 @@ import 'package:to_do_list/models/todo_operation.dart';
 import 'package:flutter/services.dart';
 import 'package:to_do_list/screen/welcome_screen.dart';
 import 'firebase_options.dart';
-import 'utils/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +19,6 @@ Future<void> main() async {
 var appTheme = ThemeData(
   fontFamily: 'Poppins',
   primaryColor: kDefaultColor,
-  // androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
   useMaterial3: true,
   textTheme: const TextTheme(
     headline2: TextStyle(

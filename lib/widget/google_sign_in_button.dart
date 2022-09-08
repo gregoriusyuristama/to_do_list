@@ -22,7 +22,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
         : ElevatedButton(
             style: ElevatedButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
-              primary: kDefaultColor,
+              backgroundColor: kDefaultColor,
             ),
             onPressed: () async {
               setState(() {

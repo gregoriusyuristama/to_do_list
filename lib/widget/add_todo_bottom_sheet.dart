@@ -90,7 +90,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: kDefaultColor,
+            backgroundColor: kDefaultColor,
           ),
           onPressed: () {
             setState(() {
