@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 import 'package:to_do_list/screen/welcome_screen.dart';
 import 'package:to_do_list/utils/authentication.dart';
+import 'package:to_do_list/utils/local_notification_services.dart';
 
 import '../utils/constants.dart';
 
@@ -40,7 +41,7 @@ class Greetings extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: IconButton(
                 onPressed: () async {
-                  bool _confimation = false;
+                  bool confimation = false;
                   await showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -61,7 +62,7 @@ class Greetings extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            _confimation = true;
+                            confimation = true;
                             Navigator.pop(context, 'OK');
                           },
                           child: const Text('OK', style: kDefaultTextColor),
@@ -69,10 +70,11 @@ class Greetings extends StatelessWidget {
                       ],
                     ),
                   );
-                  if (_confimation) {
+                  if (confimation) {
                     await Authentication.signOut(context: context);
                     Provider.of<TodoOperation>(context, listen: false)
                         .clearTodoList();
+                    LocalNotificationService.deleteNotification();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

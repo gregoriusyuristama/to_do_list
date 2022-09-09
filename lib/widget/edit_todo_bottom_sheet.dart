@@ -126,7 +126,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
             Expanded(
               child: TextButton(
                 style: TextButton.styleFrom(
-                  primary: Colors.red,
+                  foregroundColor: Colors.red,
                 ),
                 onPressed: () {
                   Provider.of<TodoOperation>(

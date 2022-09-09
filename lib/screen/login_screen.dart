@@ -142,17 +142,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                         progress?.show();
                                         if (_emailValidated &&
                                             _passwordValidated) {
-                                          final _signInStatus =
+                                          final signInStatus =
                                               await Authentication
                                                   .signInWithEmail(
-                                                      email:
-                                                          _controllerEmail
-                                                              .text
-                                                              .trim(),
+                                                      email: _controllerEmail
+                                                          .text
+                                                          .trim(),
                                                       password:
                                                           _controllerPassword
                                                               .text);
-                                          if (_signInStatus ==
+                                          if (signInStatus ==
                                               AuthStatus.successful) {
                                             await Provider.of<TodoOperation>(
                                                     context,
@@ -171,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             progress?.dismiss();
                                             final error = AuthExceptionHandler
                                                 .generateErrorMessage(
-                                                    _signInStatus);
+                                                    signInStatus);
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
@@ -183,14 +182,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                           }
                                         }
                                       },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: kDefaultColor,
+                                      ),
                                       child: const Text(
                                         'Login',
                                         style: TextStyle(
                                           color: Colors.white,
                                         ),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        primary: kDefaultColor,
                                       ),
                                     ),
                                     TextButton(
@@ -234,9 +233,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ],
-                          ),
-                          style: TextButton.styleFrom(
-                            primary: kDefaultColor,
                           ),
                         ),
                       ],

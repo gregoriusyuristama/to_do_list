@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
+import 'package:to_do_list/utils/local_notification_services.dart';
 import 'package:to_do_list/widget/empty_todo.dart';
 
 import 'add_todo_bottom_sheet.dart';
@@ -21,6 +22,7 @@ class TodoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    LocalNotificationService.initialize();
     final todoData = Provider.of<TodoOperation>(context);
     return Container(
       decoration: kTodoBoxDecoration,
@@ -101,6 +103,16 @@ class TodoBox extends StatelessWidget {
                         }),
                       ),
                     ),
+                    // IconButton(
+                    //     icon: Icon(FontAwesomeIcons.noteSticky),
+                    //     onPressed: () async {
+                    //       int totalTodos = todoData.unDoneTodoCount;
+                    //       await LocalNotificationService.showNotification(
+                    //         id: 0,
+                    //         title: 'You have $totalTodos Unfinished To Do(s)',
+                    //         body: 'Let\'s finish it all!',
+                    //       );
+                    //     }),
                   ],
                 ),
               ),

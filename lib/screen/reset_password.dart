@@ -93,11 +93,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   FocusScope.of(context).unfocus();
                                   progress?.show();
                                   if (_emailValidated) {
-                                    final _resetStatus =
+                                    final resetStatus =
                                         await Authentication.resetPassword(
                                             email:
                                                 _controllerEmail.text.trim());
-                                    if (_resetStatus == AuthStatus.successful) {
+                                    if (resetStatus == AuthStatus.successful) {
                                       progress?.dismiss();
                                       Navigator.of(context)
                                           .popUntil((route) => route.isFirst);
@@ -108,7 +108,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     } else {
                                       progress?.dismiss();
                                       final error = AuthExceptionHandler
-                                          .generateErrorMessage(_resetStatus);
+                                          .generateErrorMessage(resetStatus);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -120,14 +120,14 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     }
                                   }
                                 },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: kDefaultColor,
+                                ),
                                 child: const Text(
                                   'Reset Password',
                                   style: TextStyle(
                                     color: Colors.white,
                                   ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: kDefaultColor,
                                 ),
                               ),
                             ],
@@ -137,6 +137,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        backgroundColor: kDefaultColor,
+                      ),
                       child: Row(
                         children: const [
                           Padding(
@@ -154,9 +157,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                             ),
                           ),
                         ],
-                      ),
-                      style: TextButton.styleFrom(
-                        primary: kDefaultColor,
                       ),
                     ),
                   ],

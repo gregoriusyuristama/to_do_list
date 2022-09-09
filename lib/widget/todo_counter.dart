@@ -42,7 +42,7 @@ class TodoCounter extends StatelessWidget {
               decoration: counterCardDecoration,
               width: counterCardWidth,
               height: counterCardHeight,
-              child: counterText(todoData.todoCount.toString()),
+              child: counterText(todoData.unDoneTodoCount.toString()),
             ),
             const SizedBox(
               width: sizedBoxWidth,
