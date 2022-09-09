@@ -100,10 +100,6 @@ class WelcomeScreen extends StatelessWidget {
                                         );
                                       }
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: kDefaultColor,
-                                      minimumSize: const Size.fromHeight(40),
-                                    ),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
@@ -125,11 +121,15 @@ class WelcomeScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: kDefaultColor,
+                                      minimumSize: const Size.fromHeight(40),
+                                    ),
                                   ),
                                   const GoogleSignInButton(),
                                   ElevatedButton(
                                     onPressed: () async {
-                                      bool understand = false;
+                                      bool _understand = false;
                                       final progress = ProgressHUD.of(context);
                                       await showDialog(
                                         context: context,
@@ -156,7 +156,7 @@ class WelcomeScreen extends StatelessWidget {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                understand = true;
+                                                _understand = true;
                                                 Navigator.pop(context);
                                               },
                                               child: const Text(
@@ -167,13 +167,13 @@ class WelcomeScreen extends StatelessWidget {
                                           ],
                                         ),
                                       );
-                                      if (understand) {
+                                      if (_understand) {
                                         try {
                                           progress?.show();
-                                          final signInStatus =
+                                          final _signInStatus =
                                               await Authentication
                                                   .signInAnonymousely();
-                                          if (signInStatus ==
+                                          if (_signInStatus ==
                                               AuthStatus.successful) {
                                             await Provider.of<TodoOperation>(
                                                     context,
@@ -191,7 +191,7 @@ class WelcomeScreen extends StatelessWidget {
                                           } else {
                                             final error = AuthExceptionHandler
                                                 .generateErrorMessage(
-                                                    signInStatus);
+                                                    _signInStatus);
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
@@ -213,10 +213,6 @@ class WelcomeScreen extends StatelessWidget {
                                         }
                                       }
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: kDefaultColor,
-                                      minimumSize: const Size.fromHeight(40),
-                                    ),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
@@ -237,6 +233,10 @@ class WelcomeScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ],
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: kDefaultColor,
+                                      minimumSize: const Size.fromHeight(40),
                                     ),
                                   ),
                                 ],
@@ -297,20 +297,20 @@ class WelcomeScreen extends StatelessWidget {
                         );
                       }
                     },
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: kDefaultColor,
+                      primary: kDefaultColor,
                       // minimumSize: Size.fromHeight(40),
                       // side: BorderSide(
                       //   color: Colors.white,
                       //   width: 1,
                       // ),
                       elevation: 5,
-                    ),
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
                     ),
                   ),
                 ],

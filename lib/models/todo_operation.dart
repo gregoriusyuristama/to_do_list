@@ -18,12 +18,6 @@ class TodoOperation with ChangeNotifier {
     return _todolist.length;
   }
 
-  int get unDoneTodoCount {
-    var unDoneTodoList =
-        _todolist.where((element) => element.todoDone == false);
-    return unDoneTodoList.length;
-  }
-
   UnmodifiableListView<ToDo> get todolist {
     return UnmodifiableListView(_todolist);
   }

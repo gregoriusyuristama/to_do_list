@@ -180,13 +180,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           _validateEmail &&
                                           _validatePassword &&
                                           _validateVerifyPassword) {
-                                        final statusCreateAccount =
+                                        final _statusCreateAccount =
                                             await Authentication.createAccount(
                                                 email: _controllerEmail.text,
                                                 password:
                                                     _controllerPassword.text,
                                                 name: _controllerName.text);
-                                        if (statusCreateAccount ==
+                                        if (_statusCreateAccount ==
                                             AuthStatus.successful) {
                                           progress?.dismiss();
                                           Navigator.popUntil(context,
@@ -202,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           progress?.dismiss();
                                           final error = AuthExceptionHandler
                                               .generateErrorMessage(
-                                                  statusCreateAccount);
+                                                  _statusCreateAccount);
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
@@ -214,14 +214,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         }
                                       }
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: kDefaultColor,
-                                    ),
                                     child: const Text(
                                       'Register',
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: kDefaultColor,
                                     ),
                                   ),
                                 ],
@@ -249,6 +249,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                           ],
+                        ),
+                        style: TextButton.styleFrom(
+                          primary: kDefaultColor,
                         ),
                       ),
                     ],
