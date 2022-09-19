@@ -137,9 +137,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(
-                        backgroundColor: kDefaultColor,
-                      ),
                       child: Row(
                         children: const [
                           Padding(
