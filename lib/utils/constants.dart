@@ -89,3 +89,10 @@ const kTextFieldTextStyle = TextStyle(
 const kDefaultTextColor = TextStyle(
   color: kDefaultColor,
 );
+
+const kTitleWidgetCardPadding = EdgeInsets.only(
+  // top: 30.0,
+  left: 30,
+  right: 25,
+  // bottom: 15,
+);

@@ -10,13 +10,6 @@ import 'add_todo_bottom_sheet.dart';
 import 'bottom_button.dart';
 import 'todo_card.dart';
 
-const titleWidgetCardPadding = EdgeInsets.only(
-  // top: 30.0,
-  left: 30,
-  right: 25,
-  // bottom: 15,
-);
-
 class TodoBox extends StatelessWidget {
   const TodoBox({Key? key}) : super(key: key);
 
@@ -33,7 +26,7 @@ class TodoBox extends StatelessWidget {
               Container(
                 height: constraints.maxHeight * 0.125,
                 width: constraints.maxWidth,
-                padding: titleWidgetCardPadding,
+                padding: kTitleWidgetCardPadding,
                 alignment: FractionalOffset.bottomLeft,
                 child: Text(
                   'Your To Do Lists',

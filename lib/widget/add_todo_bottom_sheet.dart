@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
+import 'package:to_do_list/utils/sharedpref_helper.dart';
+
+import '../utils/local_notification_services.dart';
 
 class AddTodoBottomSheet extends StatefulWidget {
   const AddTodoBottomSheet({Key? key}) : super(key: key);
@@ -101,6 +104,11 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
             if (!_validate) {
               Provider.of<TodoOperation>(context, listen: false)
                   .addTodo(_myTextController.text, _prio);
+              int totalTodos =
+                  Provider.of<TodoOperation>(context, listen: false)
+                      .unDoneTodoCount;
+              LocalNotificationService.setScheduledNotification(
+                  context: context);
               Navigator.pop(context);
             }
           },

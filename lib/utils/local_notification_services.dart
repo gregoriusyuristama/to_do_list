@@ -1,8 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
 // ignore: depend_on_referenced_packages
 import 'package:timezone/timezone.dart' as tz;
+import 'package:to_do_list/utils/sharedpref_helper.dart';
 import 'package:to_do_list/utils/time_helper_service.dart';
+
+import '../models/todo_operation.dart';
 
 class LocalNotificationService {
   static final localNotificationService = FlutterLocalNotificationsPlugin();
@@ -62,14 +67,15 @@ class LocalNotificationService {
     required int id,
     required String title,
     required String body,
-    required int hour,
   }) async {
     final details = await _notificationDetails();
+    var dailyHour = await SharedPrefHelper.getDailyNotificationHour();
+    var dailyMinutes = await SharedPrefHelper.getDailyNotificationMinutes();
     await localNotificationService.zonedSchedule(
       id,
       title,
       body,
-      await _scheduleDaily(Time(hour)),
+      await _scheduleDaily(Time(dailyHour, dailyMinutes)),
       details,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
@@ -97,6 +103,18 @@ class LocalNotificationService {
     return scheduledDate.isBefore(now)
         ? scheduledDate.add(const Duration(days: 1))
         : scheduledDate;
+  }
+
+  static setScheduledNotification({required BuildContext context}) {
+    int totalTodos = Provider.of<TodoOperation>(
+      context,
+      listen: false,
+    ).unDoneTodoCount;
+    showScheduledNotification(
+      id: 0,
+      title: 'You have $totalTodos Unfinished To Do(s)',
+      body: 'Let\'s finish it all!',
+    );
   }
 
   static deleteNotification() {

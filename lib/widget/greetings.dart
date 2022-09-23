@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:to_do_list/models/todo_operation.dart';
-import 'package:to_do_list/screen/welcome_screen.dart';
+import 'package:to_do_list/screen/app_settings.dart';
 import 'package:to_do_list/utils/authentication.dart';
-import 'package:to_do_list/utils/local_notification_services.dart';
-
-import '../utils/constants.dart';
 
 const textGreetings = 'Hi,';
 
@@ -16,80 +11,69 @@ class Greetings extends StatelessWidget {
   final String name;
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => Container(
-        alignment: FractionalOffset.bottomCenter,
-        child: Row(
-          children: [
-            Container(
-              height: constraints.maxHeight * 0.7,
-              width: constraints.maxWidth * 0.9,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '$textGreetings $name',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1
-                    ?.copyWith(fontSize: 40),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Container(
-              height: constraints.maxHeight * 0.7,
-              width: constraints.maxWidth * 0.1,
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                onPressed: () async {
-                  bool confimation = false;
-                  await showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Confirmation'),
-                      content: const Text(
-                        'Do you want to log out? ',
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context, 'Cancel');
-                            return;
-                          },
-                          child: const Text('Cancel', style: kDefaultTextColor),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            confimation = true;
-                            Navigator.pop(context, 'OK');
-                          },
-                          child: const Text('OK', style: kDefaultTextColor),
-                        ),
-                      ],
-                    ),
-                  );
-                  if (confimation) {
-                    await Authentication.signOut(context: context);
-                    Provider.of<TodoOperation>(context, listen: false)
-                        .clearTodoList();
-                    LocalNotificationService.deleteNotification();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const WelcomeScreen(),
-                      ),
-                    );
-                  }
-                },
-                icon: const Icon(
-                  FontAwesomeIcons.arrowRightFromBracket,
-                  color: Colors.white,
+    return Container(
+      height: 100,
+      child: LayoutBuilder(
+        builder: (context, constraints) => Container(
+          alignment: FractionalOffset.bottomCenter,
+          child: Row(
+            children: [
+              Container(
+                height: constraints.maxHeight * 0.7,
+                width: constraints.maxWidth * 0.8,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '$textGreetings $name',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      ?.copyWith(fontSize: 40),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-          ],
+              Container(
+                height: constraints.maxHeight * 0.7,
+                width: constraints.maxWidth * 0.1,
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                    icon: const Icon(
+                      FontAwesomeIcons.gear,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AppSettings(),
+                          ));
+                    }),
+              ),
+              Container(
+                height: constraints.maxHeight * 0.7,
+                width: constraints.maxWidth * 0.1,
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  onPressed: () {
+                    Authentication.confirmationDialog(
+                      context: context,
+                      confirmationText: 'Do you want to log out?',
+                    ).then(
+                      (confirmed) {
+                        if (confirmed) {
+                          Authentication.signOut(context: context);
+                        }
+                      },
+                    );
+                  },
+                  icon: const Icon(
+                    FontAwesomeIcons.arrowRightFromBracket,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

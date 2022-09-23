@@ -4,6 +4,7 @@ import 'package:to_do_list/models/todo_operation.dart';
 import 'package:to_do_list/widget/edit_todo_bottom_sheet.dart';
 
 import '../models/todo.dart';
+import '../utils/local_notification_services.dart';
 import 'todo_card_content.dart';
 
 const cardPadding = EdgeInsets.all(
@@ -75,6 +76,8 @@ class TodoCard extends StatelessWidget {
                           : Icons.check_circle_outline),
                       onPressed: () {
                         todoData.doneTodo(todo);
+                        LocalNotificationService.setScheduledNotification(
+                            context: context);
                       }),
                 ),
               ),

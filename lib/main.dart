@@ -6,6 +6,7 @@ import 'package:to_do_list/models/todo_operation.dart';
 import 'package:flutter/services.dart';
 import 'package:to_do_list/screen/welcome_screen.dart';
 import 'firebase_options.dart';
+import 'utils/local_notification_services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await LocalNotificationService.initialize();
   runApp(const MyApp());
 }
 

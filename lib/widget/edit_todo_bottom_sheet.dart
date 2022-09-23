@@ -4,6 +4,7 @@ import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/models/todo_operation.dart';
 
 import '../models/todo.dart';
+import '../utils/local_notification_services.dart';
 
 class EditTodoBottomSheet extends StatefulWidget {
   const EditTodoBottomSheet({
@@ -153,6 +154,10 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                       context,
                       listen: false,
                     ).updateTodo(widget.todo);
+                    Provider.of<TodoOperation>(context, listen: false)
+                        .addTodo(_myTextController.text, _prio);
+                    LocalNotificationService.setScheduledNotification(
+                        context: context);
                     Navigator.pop(context);
                   }
                 },
