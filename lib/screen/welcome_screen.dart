@@ -117,10 +117,12 @@ class WelcomeScreen extends StatelessWidget {
                                             color: Colors.white,
                                           ),
                                         ),
-                                        Text(
-                                          'Login with Email',
-                                          style: TextStyle(
-                                            color: Colors.white,
+                                        FittedBox(
+                                          child: Text(
+                                            'Login with Email',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -136,6 +138,8 @@ class WelcomeScreen extends StatelessWidget {
                                         builder: (context) => AlertDialog(
                                           title: const Text(
                                             'Warning',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
                                           ),
                                           content: const Text(
                                             'When login anonymously your to do list won\'t be saved and deleted immediately after you logged out',
@@ -160,7 +164,7 @@ class WelcomeScreen extends StatelessWidget {
                                                 Navigator.pop(context);
                                               },
                                               child: const Text(
-                                                'Ok, i understand',
+                                                'Ok, I understand',
                                                 style: kDefaultTextColor,
                                               ),
                                             ),
@@ -230,10 +234,12 @@ class WelcomeScreen extends StatelessWidget {
                                             color: Colors.white,
                                           ),
                                         ),
-                                        Text(
-                                          'Try with Login Anonymously',
-                                          style: TextStyle(
-                                            color: Colors.white,
+                                        FittedBox(
+                                          child: Text(
+                                            'Try with Login Anonymously',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ],

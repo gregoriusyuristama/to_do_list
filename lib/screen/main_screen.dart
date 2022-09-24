@@ -57,7 +57,7 @@ class MainScreen extends StatelessWidget {
                 SizedBox(
                   height: availableHeight * 0.025,
                 ),
-                Expanded(
+                const Expanded(
                   flex: 11,
                   child: TodoBox(),
                 ),

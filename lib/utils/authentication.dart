@@ -147,10 +147,15 @@ class Authentication {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirmation'),
+        title: const Text(
+          'Confirmation',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: Text(
           confirmationText,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
           ),
         ),

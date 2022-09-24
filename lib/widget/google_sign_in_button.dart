@@ -60,12 +60,14 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      'Login with Google',
-                      style: TextStyle(
-                          // fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.normal),
+                    child: FittedBox(
+                      child: Text(
+                        'Login with Google',
+                        style: TextStyle(
+                            // fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.normal),
+                      ),
                     ),
                   ),
                 ],

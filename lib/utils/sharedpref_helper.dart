@@ -15,8 +15,6 @@ class SharedPrefHelper {
     if (prefs.getInt('dailyMinutes') == null) {
       prefs.setInt('dailyMinutes', 0);
     }
-    print("init daily hour: ${prefs.getInt('dailyHour')}");
-    print("init daily minutes: ${prefs.getInt('dailyMinutes')}");
   }
 
   static Future<int> getDailyNotificationHour() async {

@@ -11,7 +11,7 @@ class Greetings extends StatelessWidget {
   final String name;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 100,
       child: LayoutBuilder(
         builder: (context, constraints) => Container(
@@ -45,7 +45,7 @@ class Greetings extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AppSettings(),
+                            builder: (context) => const AppSettings(),
                           ));
                     }),
               ),

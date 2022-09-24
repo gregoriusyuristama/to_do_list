@@ -1,13 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:to_do_list/utils/authentication.dart';
 import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/utils/sharedpref_helper.dart';
 import 'package:to_do_list/utils/string_helper.dart';
 import 'package:to_do_list/widget/greetings.dart';
-
-import '../models/todo_operation.dart';
 import '../utils/local_notification_services.dart';
 
 class AppSettings extends StatelessWidget {
@@ -23,6 +20,7 @@ class AppSettings extends StatelessWidget {
           width: mediaQuery.width,
           decoration: kDefaultBackgroundDecoration,
           child: SafeArea(
+            bottom: false,
             child: Padding(
               padding:
                   EdgeInsets.symmetric(horizontal: mediaQuery.width * 0.025),
@@ -60,7 +58,7 @@ class AppSettings extends StatelessWidget {
                                           padding: EdgeInsets.zero,
                                           onPressed: () =>
                                               Navigator.pop(context),
-                                          icon: Icon(
+                                          icon: const Icon(
                                             Icons.arrow_back,
                                             size: 24,
                                           ),
@@ -126,10 +124,12 @@ class AppSettings extends StatelessWidget {
                                       );
                                     }
                                   },
+                                  style: TextButton.styleFrom(
+                                      alignment: Alignment.centerLeft),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
-                                    children: [
+                                    children: const [
                                       Text(
                                         'Change Daily Notification Time',
                                         style: kDefaultTextColor,
@@ -138,8 +138,6 @@ class AppSettings extends StatelessWidget {
                                           color: kDefaultColor),
                                     ],
                                   ),
-                                  style: TextButton.styleFrom(
-                                      alignment: Alignment.centerLeft),
                                 ),
                               ),
                               SizedBox(
@@ -168,6 +166,9 @@ class AppSettings extends StatelessWidget {
                                     }
                                   });
                                 },
+                                style: TextButton.styleFrom(
+                                  alignment: Alignment.centerLeft,
+                                ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -184,9 +185,6 @@ class AppSettings extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                style: TextButton.styleFrom(
-                                  alignment: Alignment.centerLeft,
-                                ),
                               ),
                               TextButton(
                                 onPressed: () {
@@ -201,6 +199,9 @@ class AppSettings extends StatelessWidget {
                                     }
                                   });
                                 },
+                                style: TextButton.styleFrom(
+                                  alignment: Alignment.centerLeft,
+                                ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -216,9 +217,6 @@ class AppSettings extends StatelessWidget {
                                       color: Colors.red[300],
                                     ),
                                   ],
-                                ),
-                                style: TextButton.styleFrom(
-                                  alignment: Alignment.centerLeft,
                                 ),
                               ),
                             ],
