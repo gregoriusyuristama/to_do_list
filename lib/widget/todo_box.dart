@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/utils/constants.dart';
-import 'package:to_do_list/models/todo_operation.dart';
+import 'package:to_do_list/controller/todo_operation.dart';
 import 'package:to_do_list/utils/local_notification_services.dart';
 import 'package:to_do_list/widget/empty_todo.dart';
 
@@ -11,7 +12,9 @@ import 'bottom_button.dart';
 import 'todo_card.dart';
 
 class TodoBox extends StatelessWidget {
-  const TodoBox({Key? key}) : super(key: key);
+  User? loggedInUser = FirebaseAuth.instance.currentUser;
+
+  TodoBox({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +30,16 @@ class TodoBox extends StatelessWidget {
                 height: constraints.maxHeight * 0.125,
                 width: constraints.maxWidth,
                 padding: kTitleWidgetCardPadding,
-                alignment: FractionalOffset.bottomLeft,
-                child: Text(
-                  'Your To Do Lists',
-                  style: Theme.of(context).textTheme.headline3,
-                  textAlign: TextAlign.left,
+                alignment: FractionalOffset.centerLeft,
+                child: FittedBox(
+                  child: Text(
+                    'Your To Do List',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3
+                        ?.copyWith(fontSize: 32),
+                    textAlign: TextAlign.left,
+                  ),
                 ),
               ),
               Divider(

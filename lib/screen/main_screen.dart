@@ -12,6 +12,8 @@ late User loggedInUser;
 class MainScreen extends StatelessWidget {
   final auth = FirebaseAuth.instance;
 
+  MainScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -39,9 +41,11 @@ class MainScreen extends StatelessWidget {
                               ? 'Guest'
                               : user.displayName.toString(),
                         ),
+                        true,
                       )
                     : const Greetings(
                         'Guest',
+                        true,
                       ),
                 SizedBox(
                   height: availableHeight * 0.025,
@@ -57,7 +61,7 @@ class MainScreen extends StatelessWidget {
                 SizedBox(
                   height: availableHeight * 0.025,
                 ),
-                const Expanded(
+                Expanded(
                   flex: 11,
                   child: TodoBox(),
                 ),
