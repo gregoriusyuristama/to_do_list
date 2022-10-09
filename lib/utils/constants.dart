@@ -91,7 +91,7 @@ const kDefaultTextColor = TextStyle(
 );
 
 const kTitleWidgetCardPadding = EdgeInsets.only(
-  // top: 30.0,
+  top: 15.0,
   left: 30,
   right: 25,
   // bottom: 15,

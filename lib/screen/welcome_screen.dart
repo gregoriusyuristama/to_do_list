@@ -3,11 +3,12 @@ import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/utils/authentication.dart';
 import 'package:to_do_list/utils/constants.dart';
-import 'package:to_do_list/screen/login_screen.dart';
-import 'package:to_do_list/screen/register_screen.dart';
+import 'package:to_do_list/screen/Login_Screen/login_screen.dart';
+import 'package:to_do_list/screen/Register_screen/register_screen.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'dart:io' show Platform;
 
-import '../models/todo_operation.dart';
+import '../controller/todo_operation.dart';
 import '../utils/authentication_exception.dart';
 import '../widget/google_sign_in_button.dart';
 import 'main_screen.dart';
@@ -129,6 +130,84 @@ class WelcomeScreen extends StatelessWidget {
                                     ),
                                   ),
                                   const GoogleSignInButton(),
+                                  Platform.isIOS
+                                      ? ElevatedButton(
+                                          onPressed: () async {
+                                            final progress =
+                                                ProgressHUD.of(context);
+                                            progress?.show();
+
+                                            try {
+                                              final user = await Authentication
+                                                  .signInWithApple(
+                                                      context: context);
+                                              if (user != null) {
+                                                await Provider.of<
+                                                            TodoOperation>(
+                                                        context,
+                                                        listen: false)
+                                                    .setTodolist();
+                                                Navigator.of(context).popUntil(
+                                                    (route) => route.isFirst);
+                                                Navigator.of(context)
+                                                    .pushReplacement(
+                                                        MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MainScreen(),
+                                                ));
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Error couldn\'t sign in.',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              progress?.dismiss();
+                                            } catch (e) {
+                                              progress?.dismiss();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    'Error couldn\'t sign in.',
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: kDefaultColor,
+                                            minimumSize:
+                                                const Size.fromHeight(40),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: const [
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 8.0,
+                                                ),
+                                                child: Icon(
+                                                  Icons.apple,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              FittedBox(
+                                                child: Text(
+                                                  'Sign In With Apple',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Container(),
                                   ElevatedButton(
                                     onPressed: () async {
                                       bool understand = false;
@@ -182,7 +261,7 @@ class WelcomeScreen extends StatelessWidget {
                                             await Provider.of<TodoOperation>(
                                                     context,
                                                     listen: false)
-                                                .setTodolist(context: context);
+                                                .setTodolist();
                                             progress?.dismiss();
                                             Navigator.of(context).popUntil(
                                                 (route) => route.isFirst);

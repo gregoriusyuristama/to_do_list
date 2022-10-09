@@ -1,30 +1,42 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
-import 'package:to_do_list/main.dart';
-
-void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
-}
+// StreamBuilder<QuerySnapshot>(
+//                     stream: DBServices.db.snapshots(),
+//                     builder: (context, snapshot) {
+//                       if (!snapshot.hasData) {
+//                         return EmptyTodo(
+//                           availableHeight: constraints.maxHeight * 0.7,
+//                           availableWidth: constraints.maxWidth,
+//                         );
+//                       } else {
+//                         final data = snapshot.data!.docs;
+//                         return ListView.builder(
+//                           itemBuilder: (context, index) {
+//                             ToDo todoItem = ToDo(
+//                                 id: data[index]['to_do_id'],
+//                                 todoName: data[index]['to_do_text'],
+//                                 priority: data[index]['to_do_prio'],
+//                                 todoDone: data[index]['to_do_done']);
+//                             return TodoCard(
+//                               constraints.maxWidth,
+//                               constraints.maxHeight,
+//                               todoItem,
+//                               () {
+//                                 todoItem.toggleDone();
+//                                 FirebaseFirestore.instance
+//                                     .collection('user')
+//                                     .doc(FirebaseAuth.instance.currentUser!.uid)
+//                                     .collection('to_dos')
+//                                     .doc(todoItem.id)
+//                                     .update(
+//                                   {
+//                                     'to_do_done': todoItem.todoDone,
+//                                   },
+//                                 );
+//                                 ;
+//                               },
+//                             );
+//                           },
+//                           itemCount: snapshot.data?.size,
+//                         );
+//                       }
+//                     },
+//                   )

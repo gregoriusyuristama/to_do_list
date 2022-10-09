@@ -2,10 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/utils/constants.dart';
-import 'package:to_do_list/models/todo_operation.dart';
+import 'package:to_do_list/controller/todo_operation.dart';
 import 'package:flutter/services.dart';
 import 'package:to_do_list/screen/welcome_screen.dart';
-import 'firebase_options.dart';
+import 'utils/firebase_options.dart';
 import 'utils/local_notification_services.dart';
 
 Future<void> main() async {

@@ -7,7 +7,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:to_do_list/utils/sharedpref_helper.dart';
 import 'package:to_do_list/utils/time_helper_service.dart';
 
-import '../models/todo_operation.dart';
+import '../controller/todo_operation.dart';
 
 class LocalNotificationService {
   static final localNotificationService = FlutterLocalNotificationsPlugin();

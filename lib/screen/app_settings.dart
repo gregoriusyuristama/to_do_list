@@ -31,6 +31,7 @@ class AppSettings extends StatelessWidget {
                     user!.isAnonymous
                         ? 'Guest'
                         : StringHelper.firstName(user.displayName.toString()),
+                    false,
                   ),
                   Expanded(
                     child: Container(

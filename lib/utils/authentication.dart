@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:to_do_list/firebase_options.dart';
-import 'package:to_do_list/models/todo_operation.dart';
+import 'package:the_apple_sign_in/the_apple_sign_in.dart';
+import 'package:to_do_list/utils/firebase_options.dart';
+import 'package:to_do_list/controller/todo_operation.dart';
 import 'package:to_do_list/screen/main_screen.dart';
 import 'dart:io';
 
@@ -24,8 +26,7 @@ class Authentication {
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await Provider.of<TodoOperation>(context, listen: false)
-            .setTodolist(context: context);
+        await Provider.of<TodoOperation>(context, listen: false).setTodolist();
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) {
@@ -88,11 +89,11 @@ class Authentication {
         .then((value) => _status = AuthStatus.successful)
         .catchError(
             (e) => _status = AuthExceptionHandler.handleAuthException(e));
+
     return _status;
   }
 
   static Future<User?> signInWithGoogle({required BuildContext context}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
 
     final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -113,10 +114,9 @@ class Authentication {
 
       try {
         final UserCredential userCredential =
-            await auth.signInWithCredential(credential);
+            await _auth.signInWithCredential(credential);
         user = userCredential.user;
-        await Provider.of<TodoOperation>(context, listen: false)
-            .setTodolist(context: context);
+        await Provider.of<TodoOperation>(context, listen: false).setTodolist();
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           ScaffoldMessenger.of(context)
@@ -137,6 +137,49 @@ class Authentication {
       }
     }
     return user;
+  }
+
+  static Future<User?> signInWithApple({required BuildContext context}) async {
+    final result = await TheAppleSignIn.performRequests([
+      const AppleIdRequest(requestedScopes: [
+        Scope.email,
+        Scope.fullName,
+      ])
+    ]);
+    switch (result.status) {
+      case AuthorizationStatus.authorized:
+        final appleIdCredential = result.credential!;
+        final oAuthProvider = OAuthProvider('apple.com');
+        final credential = oAuthProvider.credential(
+          idToken: String.fromCharCodes(appleIdCredential.identityToken!),
+          accessToken:
+              String.fromCharCodes(appleIdCredential.authorizationCode!),
+        );
+
+        final userCredential = await _auth.signInWithCredential(credential);
+        final firebaseUser = userCredential.user!;
+        if (firebaseUser.displayName == null) {
+          final fullName = appleIdCredential.fullName;
+          final displayName = '${fullName!.givenName} ${fullName.familyName}';
+
+          await firebaseUser.updateDisplayName(displayName);
+        }
+
+        return firebaseUser;
+      case AuthorizationStatus.error:
+        throw PlatformException(
+          code: 'ERROR_AUTHORIZATION_DENIED',
+          message: result.error.toString(),
+        );
+
+      case AuthorizationStatus.cancelled:
+        throw PlatformException(
+          code: 'ERROR_ABORTED_BY_USER',
+          message: 'Sign in aborted by user',
+        );
+      default:
+        throw UnimplementedError();
+    }
   }
 
   static Future<bool> confirmationDialog({

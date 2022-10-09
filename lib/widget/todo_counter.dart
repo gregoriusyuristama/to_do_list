@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:to_do_list/models/todo_operation.dart';
+import 'package:to_do_list/controller/todo_operation.dart';
 
 var backgroundCardDecoration = BoxDecoration(
   color: const Color.fromRGBO(246, 164, 97, 1.0),
