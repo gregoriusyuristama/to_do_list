@@ -5,7 +5,7 @@ import '../../utils/authentication.dart';
 import '../../utils/authentication_exception.dart';
 import '../../utils/constants.dart';
 import '../../utils/validation.dart';
-import '../main_screen.dart';
+import '../main_screen/main_screen.dart';
 
 class RegisterBox extends StatefulWidget {
   const RegisterBox({Key? key}) : super(key: key);
@@ -28,7 +28,7 @@ class _RegisterBoxState extends State<RegisterBox> {
   @override
   void dispose() {
     _controllerEmail.dispose();
-    _controllerEmail.dispose();
+    _controllerName.dispose();
     _controllerPassword.dispose();
     _controllerVerifyPassword.dispose();
     super.dispose();

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 import 'package:to_do_list/utils/firebase_options.dart';
 import 'package:to_do_list/controller/todo_operation.dart';
-import 'package:to_do_list/screen/main_screen.dart';
+import 'package:to_do_list/screen/main_screen/main_screen.dart';
 import 'dart:io';
 
 import '../screen/welcome_screen.dart';

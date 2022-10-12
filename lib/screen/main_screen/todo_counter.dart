@@ -35,6 +35,7 @@ class TodoCounter extends StatelessWidget {
       builder: (context, todoData, child) => Container(
         decoration: backgroundCardDecoration,
         width: 200,
+        height: 50,
         child: Row(
           children: [
             Container(
@@ -42,7 +43,7 @@ class TodoCounter extends StatelessWidget {
               decoration: counterCardDecoration,
               width: counterCardWidth,
               height: counterCardHeight,
-              child: counterText(todoData.unDoneTodoCount.toString()),
+              child: counterText(todoData.unFinishedTodoCount.toString()),
             ),
             const SizedBox(
               width: sizedBoxWidth,

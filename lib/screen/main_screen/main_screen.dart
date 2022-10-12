@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+// import 'package:to_do_list/screen/main_screen/search_todo.dart';
 import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/utils/sharedpref_helper.dart';
-import '../utils/string_helper.dart';
-import '../widget/greetings.dart';
-import '../widget/todo_box.dart';
-import '../widget/todo_counter.dart';
+import '../../utils/local_notification_services.dart';
+import '../../utils/string_helper.dart';
+import '../../widget/greetings.dart';
+import 'todo_box.dart';
+import 'todo_counter.dart';
 
 late User loggedInUser;
 
@@ -20,6 +22,7 @@ class MainScreen extends StatelessWidget {
     final availableHeight = (mediaQuery.size.height - mediaQuery.padding.top);
     final user = auth.currentUser;
     SharedPrefHelper.initDailyNotificationHour();
+    LocalNotificationService.initialize();
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
@@ -29,40 +32,38 @@ class MainScreen extends StatelessWidget {
         child: SafeArea(
           bottom: false,
           child: Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: mediaQuery.size.width * 0.025),
+            padding: EdgeInsets.symmetric(
+              horizontal: mediaQuery.size.width * 0.025,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                user != null
-                    ? Greetings(
-                        StringHelper.firstName(
-                          user.isAnonymous
-                              ? 'Guest'
-                              : user.displayName.toString(),
-                        ),
-                        true,
-                      )
-                    : const Greetings(
-                        'Guest',
-                        true,
-                      ),
+                Container(
+                  height: availableHeight * 0.1,
+                  child: Greetings(
+                    StringHelper.firstName(
+                      user!.isAnonymous ? 'Guest' : user.displayName.toString(),
+                    ),
+                    true,
+                  ),
+                ),
                 SizedBox(
                   height: availableHeight * 0.025,
                 ),
-                const SizedBox(
-                  height: 50,
-                  child: TodoCounter(),
+                SizedBox(height: availableHeight * 0.06, child: TodoCounter()),
+                SizedBox(
+                  height: availableHeight * 0.025,
                 ),
+                // Center(
+                //   child: SearchTodo(
+                //       mediaQuery.size.width * 0.9, availableHeight * 0.05),
+                // ),
                 // SizedBox(
                 //   height: availableHeight * 0.025,
                 // ),
-                // SearchTodo(availableWidth * 0.85, availableHeight * 0.08),
-                SizedBox(
-                  height: availableHeight * 0.025,
-                ),
-                Expanded(
-                  flex: 11,
+                Container(
+                  height: availableHeight * 0.79,
+                  width: mediaQuery.size.width,
                   child: TodoBox(),
                 ),
               ],

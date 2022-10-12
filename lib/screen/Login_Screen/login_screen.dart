@@ -17,12 +17,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: kDefaultBackgroundDecoration,
-        width: mediaQuery.size.width,
-        height: mediaQuery.size.height,
-        child: SafeArea(
-          child: ProgressHUD(
+      body: ProgressHUD(
+        child: Container(
+          decoration: kDefaultBackgroundDecoration,
+          width: mediaQuery.size.width,
+          height: mediaQuery.size.height,
+          child: SafeArea(
             child: Builder(builder: (context) {
               return Center(
                 child: SingleChildScrollView(

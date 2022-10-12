@@ -93,6 +93,12 @@ const kDefaultTextColor = TextStyle(
 const kTitleWidgetCardPadding = EdgeInsets.only(
   top: 15.0,
   left: 30,
-  right: 25,
+  right: 30,
   // bottom: 15,
+);
+
+const kTitleToDoBox = TextStyle(
+  color: Colors.black,
+  fontSize: 24,
+  fontWeight: FontWeight.bold,
 );

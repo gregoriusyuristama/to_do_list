@@ -39,9 +39,9 @@ class LocalNotificationService {
   static Future<NotificationDetails> _notificationDetails() async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-      'channelId',
-      'channelName',
-      channelDescription: 'description',
+      'daily',
+      'dailyNotification',
+      channelDescription: 'Deliver daily notification for you to do list',
       importance: Importance.max,
       playSound: true,
     );
@@ -109,11 +109,17 @@ class LocalNotificationService {
     int totalTodos = Provider.of<TodoOperation>(
       context,
       listen: false,
-    ).unDoneTodoCount;
+    ).unFinishedTodoCount;
+    String title = 'You have $totalTodos Unfinished To Do(s)';
+    String body = 'Let\'s finish it all!';
+    if (totalTodos == 0) {
+      title = 'You don\'t have any Unfinished To Do(s)';
+      body = 'Why not start create 1 today?';
+    }
     showScheduledNotification(
       id: 0,
-      title: 'You have $totalTodos Unfinished To Do(s)',
-      body: 'Let\'s finish it all!',
+      title: title,
+      body: body,
     );
   }
 

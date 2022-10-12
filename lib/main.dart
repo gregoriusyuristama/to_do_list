@@ -36,11 +36,6 @@ var appTheme = ThemeData(
       color: Colors.white,
       fontWeight: FontWeight.w500,
     ),
-    headline3: TextStyle(
-      color: Colors.black,
-      fontSize: 24,
-      fontWeight: FontWeight.bold,
-    ),
     subtitle1: TextStyle(
       color: Colors.black,
       fontSize: 15,

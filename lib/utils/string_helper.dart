@@ -38,6 +38,6 @@ class StringHelper {
         day = 'Sunday';
         break;
     }
-    return "$day, ${DateFormat.yMMMMd('en_US').format(date)}";
+    return "$day, ${DateFormat.MMMMd('en_US').format(date)}";
   }
 }

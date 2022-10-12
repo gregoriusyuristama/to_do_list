@@ -12,14 +12,29 @@ class TodoOperation with ChangeNotifier {
     return _todolist.length;
   }
 
-  int get unDoneTodoCount {
+  int get unFinishedTodoCount {
     var unDoneTodoList =
         _todolist.where((element) => element.todoDone == false);
     return unDoneTodoList.length;
   }
 
+  int get finishedTodoCount {
+    var unDoneTodoList = _todolist.where((element) => element.todoDone == true);
+    return unDoneTodoList.length;
+  }
+
   UnmodifiableListView<ToDo> get todolist {
     return UnmodifiableListView(_todolist);
+  }
+
+  UnmodifiableListView<ToDo> get finishedTodolist {
+    return UnmodifiableListView(
+        _todolist.where((todo) => todo.todoDone == true));
+  }
+
+  UnmodifiableListView<ToDo> get unfinishedTodolist {
+    return UnmodifiableListView(
+        _todolist.where((todo) => todo.todoDone == false));
   }
 
   Future<void> setTodolist() async {
@@ -37,7 +52,10 @@ class TodoOperation with ChangeNotifier {
         _todolist = listTodo;
       });
     } catch (e) {
-      print(e.toString());
+      SnackBar(
+          content: Text(
+        e.toString(),
+      ));
     }
     sortTodolist();
     notifyListeners();

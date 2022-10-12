@@ -7,7 +7,7 @@ import '../../utils/authentication.dart';
 import '../../utils/authentication_exception.dart';
 import '../../utils/constants.dart';
 import '../../utils/validation.dart';
-import '../main_screen.dart';
+import '../main_screen/main_screen.dart';
 import 'button_forgot_password.dart';
 
 class LoginBox extends StatefulWidget {

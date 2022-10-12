@@ -10,8 +10,8 @@ import 'dart:io' show Platform;
 
 import '../controller/todo_operation.dart';
 import '../utils/authentication_exception.dart';
-import '../widget/google_sign_in_button.dart';
-import 'main_screen.dart';
+// import '../widget/google_sign_in_button.dart';
+import 'main_screen/main_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -129,7 +129,73 @@ class WelcomeScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  const GoogleSignInButton(),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      minimumSize: const Size.fromHeight(40),
+                                      backgroundColor: kDefaultColor,
+                                    ),
+                                    onPressed: () async {
+                                      final progress = ProgressHUD.of(context);
+                                      progress?.show();
+                                      // sign in method
+                                      try {
+                                        final user = await Authentication
+                                            .signInWithGoogle(context: context);
+                                        if (user != null) {
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                            builder: (context) => MainScreen(),
+                                          ));
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Error couldn\'t sign in.',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        progress?.dismiss();
+                                      } catch (e) {
+                                        progress?.dismiss();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              e.toString(),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 10, 0, 10),
+                                      child: Row(
+                                        children: const [
+                                          Image(
+                                            image: AssetImage(
+                                                "assets/images/google_logo.png"),
+                                            height: 20.0,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(left: 10.0),
+                                            child: FittedBox(
+                                              child: Text(
+                                                'Login with Google',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                   Platform.isIOS
                                       ? ElevatedButton(
                                           onPressed: () async {

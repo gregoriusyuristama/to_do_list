@@ -71,11 +71,9 @@ class AppSettings extends StatelessWidget {
                                       Container(
                                         width: constraints.maxWidth * 0.75,
                                         alignment: FractionalOffset.centerLeft,
-                                        child: Text(
+                                        child: const Text(
                                           'Settings',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3,
+                                          style: kTitleToDoBox,
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
