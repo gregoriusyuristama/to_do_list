@@ -73,9 +73,11 @@ class Authentication {
     return _status;
   }
 
-  static Future<AuthStatus> signInAnonymousely() async {
+  static Future<AuthStatus> signInAnonymousely(
+      {required BuildContext context}) async {
     try {
       await _auth.signInAnonymously();
+      await Provider.of<TodoOperation>(context, listen: false).setTodolist();
       _status = AuthStatus.successful;
     } on FirebaseAuthException catch (e) {
       _status = AuthExceptionHandler.handleAuthException(e);

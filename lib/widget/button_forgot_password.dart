@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/constants.dart';
-import '../reset_password.dart';
+import '../utils/constants.dart';
+import '../screen/reset_password.dart';
 
 class ButtonForgotPassword extends StatelessWidget {
   const ButtonForgotPassword({

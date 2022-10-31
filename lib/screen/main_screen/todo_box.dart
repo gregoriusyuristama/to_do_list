@@ -20,10 +20,11 @@ class TodoBox extends StatefulWidget {
 class _TodoBoxState extends State<TodoBox> {
   bool showUnfinished = true;
   User? loggedInUser = FirebaseAuth.instance.currentUser;
+  late TodoOperation _bloc;
 
   @override
   Widget build(BuildContext context) {
-    final todoData = Provider.of<TodoOperation>(context);
+    _bloc = Provider.of<TodoOperation>(context);
     return Container(
       decoration: kTodoBoxDecoration,
       child: LayoutBuilder(
@@ -57,22 +58,22 @@ class _TodoBoxState extends State<TodoBox> {
                         height: constraints.maxHeight * 0.675,
                         width: constraints.maxWidth,
                         alignment: Alignment.center,
-                        child: todoData.unfinishedTodolist.isEmpty
+                        child: _bloc.unfinishedTodolist.isEmpty
                             ? EmptyTodo(
                                 availableHeight: constraints.maxHeight * 0.65,
                                 availableWidth: constraints.maxWidth,
                               )
                             : ListView.builder(
-                                itemCount: todoData.unFinishedTodoCount,
+                                itemCount: _bloc.unfinishedTodolist.length,
                                 itemBuilder: (context, index) {
                                   final todoItem =
-                                      todoData.unfinishedTodolist[index];
+                                      _bloc.unfinishedTodolist[index];
                                   return TodoCard(
                                     constraints.maxWidth,
                                     constraints.maxHeight,
                                     todoItem,
                                     () {
-                                      todoData.doneTodo(todoItem);
+                                      _bloc.doneTodo(todoItem);
                                     },
                                   );
                                 },
@@ -128,22 +129,22 @@ class _TodoBoxState extends State<TodoBox> {
                         height: constraints.maxHeight * 0.675,
                         width: constraints.maxWidth,
                         alignment: Alignment.center,
-                        child: todoData.finishedTodolist.isEmpty
+                        child: _bloc.finishedTodolist.isEmpty
                             ? EmptyTodo(
                                 availableHeight: constraints.maxHeight * 0.65,
                                 availableWidth: constraints.maxWidth,
                               )
                             : ListView.builder(
-                                itemCount: todoData.finishedTodoCount,
+                                itemCount: _bloc.finishedTodoCount,
                                 itemBuilder: (context, index) {
                                   final todoItem =
-                                      todoData.finishedTodolist[index];
+                                      _bloc.finishedTodolist[index];
                                   return TodoCard(
                                     constraints.maxWidth,
                                     constraints.maxHeight,
                                     todoItem,
                                     () {
-                                      todoData.doneTodo(todoItem);
+                                      _bloc.doneTodo(todoItem);
                                     },
                                   );
                                 },
@@ -160,7 +161,6 @@ class _TodoBoxState extends State<TodoBox> {
               Container(
                 height: constraints.maxHeight * 0.1,
                 width: constraints.maxWidth,
-                padding: bottomPadding,
                 alignment: Alignment.center,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,

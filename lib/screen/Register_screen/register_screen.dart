@@ -3,7 +3,7 @@ import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:to_do_list/screen/Register_screen/register_box.dart';
 import 'package:to_do_list/utils/constants.dart';
 
-import '../local_widget/button_to_welcome_screen.dart';
+import '../../widget/button_to_welcome_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);

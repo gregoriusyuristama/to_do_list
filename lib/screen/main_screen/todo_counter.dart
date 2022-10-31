@@ -32,24 +32,26 @@ class TodoCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<TodoOperation>(
-      builder: (context, todoData, child) => Container(
-        decoration: backgroundCardDecoration,
-        width: 200,
-        height: 50,
-        child: Row(
-          children: [
-            Container(
-              margin: counterCardMargin,
-              decoration: counterCardDecoration,
-              width: counterCardWidth,
-              height: counterCardHeight,
-              child: counterText(todoData.unFinishedTodoCount.toString()),
-            ),
-            const SizedBox(
-              width: sizedBoxWidth,
-            ),
-            textTitle('To Do List'),
-          ],
+      builder: (context, todoData, child) => FittedBox(
+        child: Container(
+          decoration: backgroundCardDecoration,
+          width: 200,
+          height: 50,
+          child: Row(
+            children: [
+              Container(
+                margin: counterCardMargin,
+                decoration: counterCardDecoration,
+                width: counterCardWidth,
+                height: counterCardHeight,
+                child: counterText(todoData.unFinishedTodoCount.toString()),
+              ),
+              const SizedBox(
+                width: sizedBoxWidth,
+              ),
+              textTitle('To Do List'),
+            ],
+          ),
         ),
       ),
     );

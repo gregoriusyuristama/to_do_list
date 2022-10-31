@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EmptyTodo extends StatelessWidget {
   final double availableHeight;
@@ -22,14 +21,14 @@ class EmptyTodo extends StatelessWidget {
           children: [
             FittedBox(
               child: Icon(
-                FontAwesomeIcons.noteSticky,
+                Icons.pending_actions,
                 color: Colors.grey[400],
-                size: 100,
+                size: 80,
               ),
             ),
-            const Text(
-              'Your To Do List is Empty\nLet\'s Create New To Do !',
-              style: TextStyle(color: Colors.grey, fontSize: 20),
+            Text(
+              'Your To Do List is empty,\nLet\'s create new to do !',
+              style: TextStyle(color: Colors.grey[500], fontSize: 18),
               textAlign: TextAlign.center,
             ),
           ],

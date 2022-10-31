@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:to_do_list/screen/app_settings.dart';
 import 'package:to_do_list/utils/authentication.dart';
-import 'package:to_do_list/utils/string_helper.dart';
 
 const textGreetings = 'Hi,';
 
@@ -18,76 +17,66 @@ class Greetings extends StatelessWidget {
       height: 100,
       child: LayoutBuilder(
         builder: (context, constraints) => Container(
-          alignment: FractionalOffset.bottomCenter,
-          child: Column(
+          alignment: FractionalOffset.topCenter,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
-                StringHelper.formatDate(
-                  DateTime.now(),
+              Container(
+                height: constraints.maxHeight,
+                width: constraints.maxWidth * 0.8,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '$textGreetings $name',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      ?.copyWith(fontSize: 40),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Container(
-                    height: constraints.maxHeight * 0.7,
-                    width: constraints.maxWidth * 0.8,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '$textGreetings $name',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline1
-                          ?.copyWith(fontSize: 40),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  isHomepage
-                      ? Container(
-                          height: constraints.maxHeight * 0.7,
-                          width: constraints.maxWidth * 0.1,
-                          alignment: Alignment.centerLeft,
-                          child: IconButton(
-                              icon: const Icon(
-                                FontAwesomeIcons.gear,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const AppSettings(),
-                                    ));
-                              }),
-                        )
-                      : const SizedBox(),
-                  Container(
-                    height: constraints.maxHeight * 0.7,
-                    width: constraints.maxWidth * 0.1,
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      alignment: Alignment.centerRight,
-                      onPressed: () {
-                        Authentication.confirmationDialog(
-                          context: context,
-                          confirmationText: 'Do you want to log out?',
-                        ).then(
-                          (confirmed) {
-                            if (confirmed) {
-                              Authentication.signOut(context: context);
-                            }
-                          },
-                        );
+              isHomepage
+                  ? Container(
+                      height: constraints.maxHeight * 0.7,
+                      width: constraints.maxWidth * 0.1,
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                          icon: const Icon(
+                            FontAwesomeIcons.gear,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AppSettings(),
+                                ));
+                          }),
+                    )
+                  : const SizedBox(),
+              Container(
+                height: constraints.maxHeight,
+                width: constraints.maxWidth * 0.1,
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  alignment: Alignment.centerRight,
+                  onPressed: () {
+                    Authentication.confirmationDialog(
+                      context: context,
+                      confirmationText: 'Do you want to log out?',
+                    ).then(
+                      (confirmed) {
+                        if (confirmed) {
+                          Authentication.signOut(context: context);
+                        }
                       },
-                      icon: const Icon(
-                        FontAwesomeIcons.arrowRightFromBracket,
-                        color: Colors.white,
-                      ),
-                    ),
+                    );
+                  },
+                  icon: const Icon(
+                    FontAwesomeIcons.arrowRightFromBracket,
+                    color: Colors.white,
                   ),
-                ],
+                ),
               ),
             ],
           ),

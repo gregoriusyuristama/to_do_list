@@ -70,13 +70,6 @@ class TodoOperation with ChangeNotifier {
     _todolist.sort(
       (a, b) => b.priority.compareTo(a.priority),
     );
-    _todolist.sort((a, b) {
-      if (a.todoDone) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
   }
 
   void addTodo(String todoText, int prio) {
@@ -122,5 +115,11 @@ class TodoOperation with ChangeNotifier {
     _todolist.removeWhere((element) => element.id == td.id);
     sortTodolist();
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _todolist = [];
+    super.dispose();
   }
 }

@@ -24,6 +24,7 @@ class MainScreen extends StatelessWidget {
     SharedPrefHelper.initDailyNotificationHour();
     LocalNotificationService.initialize();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: Container(
         decoration: kDefaultBackgroundDecoration,
@@ -38,8 +39,8 @@ class MainScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: availableHeight * 0.1,
+                SizedBox(
+                  height: availableHeight * 0.08,
                   child: Greetings(
                     StringHelper.firstName(
                       user!.isAnonymous ? 'Guest' : user.displayName.toString(),
@@ -48,11 +49,24 @@ class MainScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: availableHeight * 0.025,
+                  height: availableHeight * 0.01,
                 ),
-                SizedBox(height: availableHeight * 0.06, child: TodoCounter()),
                 SizedBox(
-                  height: availableHeight * 0.025,
+                  height: availableHeight * 0.055,
+                  child: const TodoCounter(),
+                ),
+                SizedBox(
+                  height: availableHeight * 0.055,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: FittedBox(
+                      child: Text(
+                        StringHelper.formatDate(
+                          DateTime.now(),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 // Center(
                 //   child: SearchTodo(
@@ -61,10 +75,10 @@ class MainScreen extends StatelessWidget {
                 // SizedBox(
                 //   height: availableHeight * 0.025,
                 // ),
-                Container(
-                  height: availableHeight * 0.79,
+                SizedBox(
+                  height: availableHeight * 0.8,
                   width: mediaQuery.size.width,
-                  child: TodoBox(),
+                  child: const TodoBox(),
                 ),
               ],
             ),

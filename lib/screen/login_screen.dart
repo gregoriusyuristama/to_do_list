@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
-import 'package:to_do_list/screen/Login_Screen/login_box.dart';
+import 'package:to_do_list/widget/login_box.dart';
 import 'package:to_do_list/utils/constants.dart';
-import '../local_widget/button_to_welcome_screen.dart';
+import '../widget/button_to_welcome_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
