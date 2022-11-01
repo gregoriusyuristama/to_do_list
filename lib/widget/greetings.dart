@@ -65,9 +65,9 @@ class Greetings extends StatelessWidget {
                       context: context,
                       confirmationText: 'Do you want to log out?',
                     ).then(
-                      (confirmed) {
+                      (confirmed) async {
                         if (confirmed) {
-                          Authentication.signOut(context: context);
+                          await Authentication.signOut(context: context);
                         }
                       },
                     );

@@ -58,7 +58,7 @@ class TodoCard extends StatelessWidget {
             }),
           ),
           child: Ink(
-            height: 85,
+            height: todo.hasDueDate() ? 115 : 85,
             width: 400,
             decoration: cardBoxDecorator,
             child: Row(

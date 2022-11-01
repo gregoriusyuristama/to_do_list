@@ -1,6 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:to_do_list/utils/authentication.dart';
 import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/screen/login_screen.dart';
@@ -13,8 +17,56 @@ import '../utils/authentication_exception.dart';
 // import '../widget/google_sign_in_button.dart';
 import 'main_screen/main_screen.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
+  static const String id = 'id';
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final userEmail = prefs.getString('emailSignIn');
+    try {
+      FirebaseDynamicLinks.instance.onLink(
+          onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+        final Uri? deepLink = dynamicLink?.link;
+        if (deepLink != null) {
+          Authentication.handleSignInLink(deepLink, userEmail, context);
+          FirebaseDynamicLinks.instance.onLink(
+              onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+            final Uri deepLink = dynamicLink!.link;
+            Authentication.handleSignInLink(deepLink, userEmail, context);
+          }, onError: (OnLinkErrorException e) async {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(e.message.toString())));
+          });
+        }
+      }, onError: (OnLinkErrorException e) async {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message.toString())));
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,12 +199,14 @@ class WelcomeScreen extends StatelessWidget {
                                               .signInWithGoogle(
                                                   context: context);
                                           if (user != null) {
-                                            Navigator.of(context)
-                                                .pushReplacement(
-                                                    MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MainScreen(),
-                                            ));
+                                            // Navigator.of(context)
+                                            //     .pushReplacement(
+                                            //         MaterialPageRoute(
+                                            //   builder: (context) =>
+                                            //       MainScreen(),
+                                            // ));
+                                            Navigator.pushReplacementNamed(
+                                                context, MainScreen.id);
                                           } else {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
@@ -209,7 +263,6 @@ class WelcomeScreen extends StatelessWidget {
                                               final progress =
                                                   ProgressHUD.of(context);
                                               progress?.show();
-
                                               try {
                                                 final user =
                                                     await Authentication
@@ -224,12 +277,16 @@ class WelcomeScreen extends StatelessWidget {
                                                   Navigator.of(context)
                                                       .popUntil((route) =>
                                                           route.isFirst);
-                                                  Navigator.of(context)
-                                                      .pushReplacement(
-                                                          MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MainScreen(),
-                                                  ));
+                                                  // Navigator.of(context)
+                                                  //     .pushReplacement(
+                                                  //         MaterialPageRoute(
+                                                  //   builder: (context) =>
+                                                  //       MainScreen(),
+                                                  // ));
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                          context,
+                                                          MainScreen.id);
                                                 } else {
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
@@ -342,12 +399,14 @@ class WelcomeScreen extends StatelessWidget {
                                               progress?.dismiss();
                                               Navigator.of(context).popUntil(
                                                   (route) => route.isFirst);
-                                              Navigator.of(context)
-                                                  .pushReplacement(
-                                                      MaterialPageRoute(
-                                                builder: (context) =>
-                                                    MainScreen(),
-                                              ));
+                                              // Navigator.of(context)
+                                              //     .pushReplacement(
+                                              //         MaterialPageRoute(
+                                              //   builder: (context) =>
+                                              //       MainScreen(),
+                                              // ));
+                                              Navigator.pushReplacementNamed(
+                                                  context, MainScreen.id);
                                             } else {
                                               final error = AuthExceptionHandler
                                                   .generateErrorMessage(

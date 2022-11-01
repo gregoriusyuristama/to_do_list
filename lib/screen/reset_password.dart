@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:to_do_list/utils/authentication.dart';
@@ -8,6 +10,7 @@ import '../utils/validation.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({Key? key}) : super(key: key);
+  static const String id = '/resetPassword';
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();

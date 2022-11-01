@@ -13,6 +13,7 @@ late User loggedInUser;
 
 class MainScreen extends StatelessWidget {
   final auth = FirebaseAuth.instance;
+  static const String id = '/home';
 
   MainScreen({Key? key}) : super(key: key);
 

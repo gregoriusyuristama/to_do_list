@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_list/utils/constants.dart';
@@ -33,9 +35,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 User? user =
                     await Authentication.signInWithGoogle(context: context);
                 if (user != null) {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => MainScreen(),
-                  ));
+                  Navigator.pushReplacementNamed(context, MainScreen.id);
                 }
                 setState(() {
                   _isSigningIn = false;

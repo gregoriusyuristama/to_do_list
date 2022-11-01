@@ -1,6 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_list/screen/Register_screen/register_screen.dart';
+import 'package:to_do_list/screen/login_screen.dart';
+import 'package:to_do_list/screen/main_screen/main_screen.dart';
+import 'package:to_do_list/screen/reset_password.dart';
 import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/controller/todo_operation.dart';
 import 'package:flutter/services.dart';
@@ -57,10 +61,18 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => TodoOperation(),
       child: MaterialApp(
+        initialRoute: WelcomeScreen.id,
+        routes: {
+          WelcomeScreen.id: (context) => const WelcomeScreen(),
+          MainScreen.id: (context) => MainScreen(),
+          RegisterScreen.id: (context) => const RegisterScreen(),
+          LoginScreen.id: (context) => const LoginScreen(),
+          ResetPassword.id: (context) => const ResetPassword(),
+        },
         debugShowCheckedModeBanner: false,
         title: 'ToDoi',
         theme: appTheme,
-        home: const WelcomeScreen(),
+        // home: const WelcomeScreen(),
       ),
     );
   }

@@ -40,4 +40,54 @@ class StringHelper {
     }
     return "$day, ${DateFormat.MMMMd('en_US').format(date)}";
   }
+
+  static String formatDueDate(String date) {
+    String dateOnly = date.substring(0, 10);
+    String timeOnly = date.substring(11);
+    DateTime tempDate = DateFormat("MM/dd/yyyy").parse(dateOnly);
+    late String day;
+    late String add = 'th';
+    switch (tempDate.weekday) {
+      case 1:
+        day = 'Mon';
+        break;
+      case 2:
+        day = 'Tue';
+        break;
+      case 3:
+        day = 'Wed';
+        break;
+      case 4:
+        day = 'Thu';
+        break;
+      case 5:
+        day = 'Fri';
+        break;
+      case 6:
+        day = 'Sat';
+        break;
+      case 7:
+        day = 'Sun';
+        break;
+    }
+    int numberedDay = tempDate.day;
+    if (numberedDay.toString().length == 2) {
+      numberedDay = int.parse(numberedDay.toString().substring(1));
+    }
+    switch (numberedDay) {
+      case 1:
+        add = 'st';
+        break;
+      case 2:
+        add = 'nd';
+        break;
+      case 3:
+        add = 'rd';
+        break;
+      default:
+        add = 'th';
+        break;
+    }
+    return "$day, ${DateFormat.MMMd('en_US').format(tempDate)}$add $timeOnly";
+  }
 }

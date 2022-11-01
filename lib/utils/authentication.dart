@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,13 +29,7 @@ class Authentication {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         await Provider.of<TodoOperation>(context, listen: false).setTodolist();
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) {
-              return MainScreen();
-            },
-          ),
-        );
+        Navigator.pushReplacementNamed(context, MainScreen.id);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(Authentication.customSnackBar(
@@ -52,7 +48,8 @@ class Authentication {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      _auth.currentUser!.updateDisplayName(name);
+      await _auth.currentUser!.updateDisplayName(name);
+      await _auth.currentUser!.sendEmailVerification();
       _status = AuthStatus.successful;
     } on FirebaseAuthException catch (e) {
       _status = AuthExceptionHandler.handleAuthException(e);
@@ -73,11 +70,29 @@ class Authentication {
     return _status;
   }
 
+  static void handleSignInLink(
+      Uri link, userEmail, BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailLink(
+        email: userEmail,
+        emailLink: link.toString(),
+      );
+      await Provider.of<TodoOperation>(context, listen: false).setTodolist();
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pushReplacementNamed(context, MainScreen.id);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    }
+  }
+
   static Future<AuthStatus> signInAnonymousely(
       {required BuildContext context}) async {
     try {
       await _auth.signInAnonymously();
-      await Provider.of<TodoOperation>(context, listen: false).setTodolist();
       _status = AuthStatus.successful;
     } on FirebaseAuthException catch (e) {
       _status = AuthExceptionHandler.handleAuthException(e);
@@ -241,6 +256,9 @@ class Authentication {
         try {
           await googleSignIn.signOut();
           await _auth.signOut();
+          Provider.of<TodoOperation>(context, listen: false).clearTodoList();
+          LocalNotificationService.deleteNotification();
+          Navigator.pushReplacementNamed(context, WelcomeScreen.id);
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
             Authentication.customSnackBar(
@@ -249,14 +267,9 @@ class Authentication {
           );
         }
       }
-      Provider.of<TodoOperation>(context, listen: false).clearTodoList();
-      LocalNotificationService.deleteNotification();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const WelcomeScreen(),
-        ),
-      );
+      // Provider.of<TodoOperation>(context, listen: false).clearTodoList();
+      // LocalNotificationService.deleteNotification();
+      // Navigator.pushReplacementNamed(context, WelcomeScreen.id);
     }
   }
 
@@ -285,14 +298,10 @@ class Authentication {
           .doc(user.uid)
           .delete();
       await user.delete();
+      await _auth.signOut();
       Provider.of<TodoOperation>(context, listen: false).clearTodoList();
       LocalNotificationService.deleteNotification();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const WelcomeScreen(),
-        ),
-      );
+      Navigator.pushReplacementNamed(context, WelcomeScreen.id);
     }
   }
 

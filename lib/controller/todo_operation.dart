@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do_list/utils/db_services.dart';
 
 import '../models/todo.dart';
+import '../utils/local_notification_services.dart';
 
 class TodoOperation with ChangeNotifier {
   List<ToDo> _todolist = [];
@@ -40,14 +41,24 @@ class TodoOperation with ChangeNotifier {
   Future<void> setTodolist() async {
     List<ToDo> listTodo = [];
     try {
-      await DBServices.dbTodos.get().then((value) {
+      await DBServices.getDbTodos().get().then((value) {
         for (var data in value.docs) {
-          listTodo.add(ToDo(
-            id: data.data()['to_do_id'],
-            todoName: data.data()['to_do_text'],
-            priority: data.data()['to_do_prio'],
-            todoDone: data.data()['to_do_done'],
-          ));
+          if (data.data().containsKey('to_do_date')) {
+            listTodo.add(ToDo(
+              id: data.data()['to_do_id'],
+              todoName: data.data()['to_do_text'],
+              priority: data.data()['to_do_prio'],
+              todoDone: data.data()['to_do_done'],
+              dueDate: data.data()['to_do_date'],
+            ));
+          } else {
+            listTodo.add(ToDo(
+              id: data.data()['to_do_id'],
+              todoName: data.data()['to_do_text'],
+              priority: data.data()['to_do_prio'],
+              todoDone: data.data()['to_do_done'],
+            ));
+          }
         }
         _todolist = listTodo;
       });
@@ -81,7 +92,7 @@ class TodoOperation with ChangeNotifier {
         priority: prio,
       ),
     );
-    DBServices.dbTodos.doc(todoId).set({
+    DBServices.getDbTodos().doc(todoId).set({
       'to_do_id': todoId,
       'to_do_text': todoText,
       'to_do_prio': prio,
@@ -91,9 +102,31 @@ class TodoOperation with ChangeNotifier {
     notifyListeners();
   }
 
+  void addTodoWithDate(
+      String todoText, int prio, String dueDate, BuildContext context) {
+    String todoId = DateTime.now().toString();
+    ToDo td = ToDo(
+      id: todoId,
+      todoName: todoText,
+      priority: prio,
+      dueDate: dueDate,
+    );
+    _todolist.add(td);
+    DBServices.getDbTodos().doc(todoId).set({
+      'to_do_id': todoId,
+      'to_do_text': todoText,
+      'to_do_prio': prio,
+      'to_do_done': false,
+      'to_do_date': dueDate,
+    });
+    LocalNotificationService.setDueDateNotification(context: context, td: td);
+    sortTodolist();
+    notifyListeners();
+  }
+
   void doneTodo(ToDo td) {
     td.toggleDone();
-    DBServices.dbTodos.doc(td.id).update({
+    DBServices.getDbTodos().doc(td.id).update({
       'to_do_done': td.todoDone,
     });
     sortTodolist();
@@ -101,7 +134,7 @@ class TodoOperation with ChangeNotifier {
   }
 
   void updateTodo(ToDo td) {
-    DBServices.dbTodos.doc(td.id).update({
+    DBServices.getDbTodos().doc(td.id).update({
       'to_do_text': td.todoName,
       'to_do_prio': td.priority,
     });
@@ -110,8 +143,19 @@ class TodoOperation with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateTodoWithDate(ToDo td) {
+    DBServices.getDbTodos().doc(td.id).update({
+      'to_do_text': td.todoName,
+      'to_do_prio': td.priority,
+      'to_do_date': td.dueDate,
+    });
+    _todolist[_todolist.indexWhere((element) => element.id == td.id)] = td;
+    sortTodolist();
+    notifyListeners();
+  }
+
   void deleteTodo(ToDo td) {
-    DBServices.dbTodos.doc(td.id).delete();
+    DBServices.getDbTodos().doc(td.id).delete();
     _todolist.removeWhere((element) => element.id == td.id);
     sortTodolist();
     notifyListeners();

@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 
@@ -5,7 +8,6 @@ import '../../utils/authentication.dart';
 import '../../utils/authentication_exception.dart';
 import '../../utils/constants.dart';
 import '../../utils/validation.dart';
-import '../main_screen/main_screen.dart';
 
 class RegisterBox extends StatefulWidget {
   const RegisterBox({Key? key}) : super(key: key);
@@ -135,11 +137,34 @@ class _RegisterBoxState extends State<RegisterBox> {
                     name: _controllerName.text);
                 if (statusCreateAccount == AuthStatus.successful) {
                   progress?.dismiss();
-                  Navigator.popUntil(context, (route) => route.isFirst);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MainScreen(),
+                  await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text(
+                        'Verify your Email',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      content: Text(
+                        'Verify Link has been sent to : ${FirebaseAuth.instance.currentUser!.email.toString()}\nPlease check your spam folder if no email received',
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            await FirebaseAuth.instance.signOut();
+                            // Navigator.of(context)
+                            //     .popUntil((route) => route.isFirst);
+                            Navigator.popUntil(
+                                context, (route) => route.isFirst);
+                          },
+                          child: const Text('OK', style: kDefaultTextColor),
+                        ),
+                      ],
                     ),
                   );
                 } else {
