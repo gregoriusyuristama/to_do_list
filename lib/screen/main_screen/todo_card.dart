@@ -83,6 +83,10 @@ class TodoCard extends StatelessWidget {
                               : Icons.check_circle_outline),
                           onPressed: () {
                             todoData.doneTodo(todo);
+                            if (todo.todoDone) {
+                              LocalNotificationService.deleteDoneNotification(
+                                  todo);
+                            }
                             LocalNotificationService.setScheduledNotification(
                                 context: context);
                           }),

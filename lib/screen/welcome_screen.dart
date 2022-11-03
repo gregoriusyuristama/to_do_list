@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
@@ -27,10 +28,11 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen>
     with WidgetsBindingObserver {
+  ImageProvider googleLogo = const AssetImage('assets/images/google_logo.png');
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addObserver(this);
+    super.initState();
   }
 
   @override
@@ -40,27 +42,20 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    precacheImage(googleLogo, context);
+    super.didChangeDependencies();
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final userEmail = prefs.getString('emailSignIn');
+
     try {
-      FirebaseDynamicLinks.instance.onLink(
-          onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-        final Uri? deepLink = dynamicLink?.link;
-        if (deepLink != null) {
-          Authentication.handleSignInLink(deepLink, userEmail, context);
-          FirebaseDynamicLinks.instance.onLink(
-              onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-            final Uri deepLink = dynamicLink!.link;
-            Authentication.handleSignInLink(deepLink, userEmail, context);
-          }, onError: (OnLinkErrorException e) async {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(e.message.toString())));
-          });
-        }
-      }, onError: (OnLinkErrorException e) async {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.message.toString())));
+      FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) async {
+        final Uri deepLink = dynamicLinkData.link;
+        await Authentication.handleSignInLink(deepLink, userEmail, context);
       });
     } catch (e) {
       ScaffoldMessenger.of(context)
@@ -117,163 +112,282 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     ),
                     Hero(
                       tag: 'cardContainer',
-                      child: Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(20.0),
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(25.0),
-                          child: FutureBuilder(
-                            future: Authentication.initializeFirebase(
-                                context: context),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return const Text(
-                                    'Error initializing Firebase');
-                              } else if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        try {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const LoginScreen(),
-                                            ),
-                                          );
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                e.toString(),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: kDefaultColor,
-                                        minimumSize: const Size.fromHeight(40),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: const [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              right: 8.0,
-                                            ),
-                                            child: Icon(
-                                              Icons.email,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          FittedBox(
-                                            child: Text(
-                                              'Login with Email',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        minimumSize: const Size.fromHeight(40),
-                                        backgroundColor: kDefaultColor,
-                                      ),
-                                      onPressed: () async {
-                                        final progress =
-                                            ProgressHUD.of(context);
-                                        progress?.show();
-                                        // sign in method
-                                        try {
-                                          final user = await Authentication
-                                              .signInWithGoogle(
-                                                  context: context);
-                                          if (user != null) {
-                                            // Navigator.of(context)
-                                            //     .pushReplacement(
-                                            //         MaterialPageRoute(
-                                            //   builder: (context) =>
-                                            //       MainScreen(),
-                                            // ));
-                                            Navigator.pushReplacementNamed(
-                                                context, MainScreen.id);
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  'Error couldn\'t sign in.',
+                      child: Center(
+                        child: SizedBox(
+                          width: 400,
+                          child: Material(
+                            elevation: 10,
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(25.0),
+                              child: FutureBuilder(
+                                future: Authentication.initializeFirebase(
+                                    context: context),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const Text(
+                                        'Error initializing Firebase');
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.done) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            try {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginScreen(),
                                                 ),
+                                              );
+                                            } catch (e) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    e.toString(),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: kDefaultColor,
+                                            minimumSize:
+                                                const Size.fromHeight(40),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: const [
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 8.0,
+                                                ),
+                                                child: Icon(
+                                                  Icons.email,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              FittedBox(
+                                                child: Text(
+                                                  'Login with Email',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize:
+                                                const Size.fromHeight(40),
+                                            backgroundColor: kDefaultColor,
+                                          ),
+                                          onPressed: () async {
+                                            final progress =
+                                                ProgressHUD.of(context);
+                                            progress?.show();
+                                            // sign in method
+                                            try {
+                                              User? user = await Authentication
+                                                  .signInWithGoogle(
+                                                      context: context);
+                                              await Provider.of<TodoOperation>(
+                                                      context,
+                                                      listen: false)
+                                                  .setTodolist();
+                                              await Navigator
+                                                  .pushReplacementNamed(
+                                                      context, MainScreen.id);
+
+                                              progress?.dismiss();
+                                            } catch (e) {
+                                              progress?.dismiss();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    e.toString(),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 10, 0, 10),
+                                            child: Row(
+                                              children: [
+                                                ImageIcon(
+                                                  googleLogo,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                                const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 10.0),
+                                                  child: FittedBox(
+                                                    child: Text(
+                                                      'Login with Google',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight
+                                                              .normal),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Platform.isIOS
+                                            ? ElevatedButton(
+                                                onPressed: () async {
+                                                  final progress =
+                                                      ProgressHUD.of(context);
+                                                  progress?.show();
+                                                  try {
+                                                    final user =
+                                                        await Authentication
+                                                            .signInWithApple(
+                                                                context:
+                                                                    context);
+                                                    if (user != null) {
+                                                      Navigator.of(context)
+                                                          .popUntil((route) =>
+                                                              route.isFirst);
+                                                      // Navigator.of(context)
+                                                      //     .pushReplacement(
+                                                      //         MaterialPageRoute(
+                                                      //   builder: (context) =>
+                                                      //       MainScreen(),
+                                                      // ));
+                                                      Navigator
+                                                          .pushReplacementNamed(
+                                                              context,
+                                                              MainScreen.id);
+                                                    } else {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Text(
+                                                            'Error couldn\'t sign in.',
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                    progress?.dismiss();
+                                                  } catch (e) {
+                                                    progress?.dismiss();
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                          'Error couldn\'t sign in.',
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      kDefaultColor,
+                                                  minimumSize:
+                                                      const Size.fromHeight(40),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: const [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                        right: 8.0,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.apple,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    FittedBox(
+                                                      child: Text(
+                                                        'Sign In With Apple',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            bool understand = false;
+                                            final progress =
+                                                ProgressHUD.of(context);
+                                            await showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                title: const Text(
+                                                  'Warning',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                content: const Text(
+                                                  'When login anonymously your to do list won\'t be saved and deleted immediately after you logged out',
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      return;
+                                                    },
+                                                    child: const Text(
+                                                      'Cancel',
+                                                      style: kDefaultTextColor,
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      understand = true;
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                      'Ok, I understand',
+                                                      style: kDefaultTextColor,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             );
-                                          }
-                                          progress?.dismiss();
-                                        } catch (e) {
-                                          progress?.dismiss();
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                e.toString(),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 10, 0, 10),
-                                        child: Row(
-                                          children: const [
-                                            Image(
-                                              image: AssetImage(
-                                                  "assets/images/google_logo.png"),
-                                              height: 20.0,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 10.0),
-                                              child: FittedBox(
-                                                child: Text(
-                                                  'Login with Google',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.normal),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Platform.isIOS
-                                        ? ElevatedButton(
-                                            onPressed: () async {
-                                              final progress =
-                                                  ProgressHUD.of(context);
-                                              progress?.show();
+                                            if (understand) {
                                               try {
-                                                final user =
+                                                progress?.show();
+                                                final signInStatus =
                                                     await Authentication
-                                                        .signInWithApple(
+                                                        .signInAnonymousely(
                                                             context: context);
-                                                if (user != null) {
+                                                if (signInStatus ==
+                                                    AuthStatus.successful) {
                                                   await Provider.of<
                                                               TodoOperation>(
                                                           context,
                                                           listen: false)
                                                       .setTodolist();
+                                                  progress?.dismiss();
                                                   Navigator.of(context)
                                                       .popUntil((route) =>
                                                           route.isFirst);
@@ -288,187 +402,78 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                                           context,
                                                           MainScreen.id);
                                                 } else {
+                                                  final error =
+                                                      AuthExceptionHandler
+                                                          .generateErrorMessage(
+                                                              signInStatus);
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
-                                                    const SnackBar(
+                                                    SnackBar(
                                                       content: Text(
-                                                        'Error couldn\'t sign in.',
+                                                        error,
                                                       ),
                                                     ),
                                                   );
                                                 }
-                                                progress?.dismiss();
                                               } catch (e) {
-                                                progress?.dismiss();
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
-                                                  const SnackBar(
+                                                  SnackBar(
                                                     content: Text(
-                                                      'Error couldn\'t sign in.',
+                                                      e.toString(),
                                                     ),
                                                   ),
                                                 );
                                               }
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: kDefaultColor,
-                                              minimumSize:
-                                                  const Size.fromHeight(40),
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: const [
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                    right: 8.0,
-                                                  ),
-                                                  child: Icon(
-                                                    Icons.apple,
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: kDefaultColor,
+                                            minimumSize:
+                                                const Size.fromHeight(40),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: const [
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 8.0,
+                                                ),
+                                                child: Icon(
+                                                  Icons.person,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              FittedBox(
+                                                child: Text(
+                                                  'Try with Login Anonymously',
+                                                  style: TextStyle(
                                                     color: Colors.white,
                                                   ),
-                                                ),
-                                                FittedBox(
-                                                  child: Text(
-                                                    'Sign In With Apple',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : Container(),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        bool understand = false;
-                                        final progress =
-                                            ProgressHUD.of(context);
-                                        await showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: const Text(
-                                              'Warning',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            content: const Text(
-                                              'When login anonymously your to do list won\'t be saved and deleted immediately after you logged out',
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                  return;
-                                                },
-                                                child: const Text(
-                                                  'Cancel',
-                                                  style: kDefaultTextColor,
-                                                ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  understand = true;
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text(
-                                                  'Ok, I understand',
-                                                  style: kDefaultTextColor,
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        );
-                                        if (understand) {
-                                          try {
-                                            progress?.show();
-                                            final signInStatus =
-                                                await Authentication
-                                                    .signInAnonymousely(
-                                                        context: context);
-                                            if (signInStatus ==
-                                                AuthStatus.successful) {
-                                              await Provider.of<TodoOperation>(
-                                                      context,
-                                                      listen: false)
-                                                  .setTodolist();
-                                              progress?.dismiss();
-                                              Navigator.of(context).popUntil(
-                                                  (route) => route.isFirst);
-                                              // Navigator.of(context)
-                                              //     .pushReplacement(
-                                              //         MaterialPageRoute(
-                                              //   builder: (context) =>
-                                              //       MainScreen(),
-                                              // ));
-                                              Navigator.pushReplacementNamed(
-                                                  context, MainScreen.id);
-                                            } else {
-                                              final error = AuthExceptionHandler
-                                                  .generateErrorMessage(
-                                                      signInStatus);
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    error,
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          } catch (e) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  e.toString(),
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: kDefaultColor,
-                                        minimumSize: const Size.fromHeight(40),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: const [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              right: 8.0,
-                                            ),
-                                            child: Icon(
-                                              Icons.person,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          FittedBox(
-                                            child: Text(
-                                              'Try with Login Anonymously',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                  return const Center(
+                                    child: SizedBox(
+                                      height: 40,
+                                      width: 40,
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                          kDefaultColor,
+                                        ),
                                       ),
                                     ),
-                                  ],
-                                );
-                              }
-                              return const CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  kDefaultColor,
-                                ),
-                              );
-                            },
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                         ),
                       ),

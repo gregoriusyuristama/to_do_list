@@ -70,22 +70,25 @@ class Authentication {
     return _status;
   }
 
-  static void handleSignInLink(
+  static Future<void> handleSignInLink(
       Uri link, userEmail, BuildContext context) async {
     try {
       await FirebaseAuth.instance.signInWithEmailLink(
         email: userEmail,
         emailLink: link.toString(),
       );
-      await Provider.of<TodoOperation>(context, listen: false).setTodolist();
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+      ;
       Navigator.pushReplacementNamed(context, MainScreen.id);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      print(e.toString());
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text(e.toString()),
+      //   ),
+      // );
     }
   }
 
@@ -118,7 +121,6 @@ class Authentication {
           ? DefaultFirebaseOptions.ios.iosClientId
           : DefaultFirebaseOptions.currentPlatform.androidClientId,
     );
-
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
     if (googleSignInAccount != null) {
@@ -133,7 +135,6 @@ class Authentication {
         final UserCredential userCredential =
             await _auth.signInWithCredential(credential);
         user = userCredential.user;
-        await Provider.of<TodoOperation>(context, listen: false).setTodolist();
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           ScaffoldMessenger.of(context)
@@ -248,13 +249,13 @@ class Authentication {
       if (user.isAnonymous) {
         await deleteAccount(context: context);
       } else {
-        final GoogleSignIn googleSignIn = GoogleSignIn(
-          clientId: Platform.isIOS
-              ? DefaultFirebaseOptions.ios.iosClientId
-              : DefaultFirebaseOptions.currentPlatform.androidClientId,
-        );
+        // final GoogleSignIn googleSignIn = GoogleSignIn(
+        //   clientId: Platform.isIOS
+        //       ? DefaultFirebaseOptions.ios.iosClientId
+        //       : DefaultFirebaseOptions.currentPlatform.androidClientId,
+        // );
         try {
-          await googleSignIn.signOut();
+          // await googleSignIn.signOut();
           await _auth.signOut();
           Provider.of<TodoOperation>(context, listen: false).clearTodoList();
           LocalNotificationService.deleteNotification();

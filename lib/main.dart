@@ -7,17 +7,17 @@ import 'package:to_do_list/screen/main_screen/main_screen.dart';
 import 'package:to_do_list/screen/reset_password.dart';
 import 'package:to_do_list/utils/constants.dart';
 import 'package:to_do_list/controller/todo_operation.dart';
-import 'package:flutter/services.dart';
 import 'package:to_do_list/screen/welcome_screen.dart';
 import 'utils/firebase_options.dart';
 import 'utils/local_notification_services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   await LocalNotificationService.initialize();
   runApp(const MyApp());
 }
@@ -72,7 +72,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'ToDoi',
         theme: appTheme,
-        // home: const WelcomeScreen(),
       ),
     );
   }

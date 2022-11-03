@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +15,20 @@ import 'package:to_do_list/utils/time_helper_service.dart';
 import '../controller/todo_operation.dart';
 import '../models/todo.dart';
 
+class ReceivedNotification {
+  ReceivedNotification({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.payload,
+  });
+
+  final int id;
+  final String? title;
+  final String? body;
+  final String? payload;
+}
+
 class LocalNotificationService {
   static final localNotificationService = FlutterLocalNotificationsPlugin();
   static final onNotifications = BehaviorSubject<String>();
@@ -19,24 +36,45 @@ class LocalNotificationService {
 
   static Future<void> initialize() async {
     timeHelper.setup();
+    final StreamController<String?> selectNotificationStream =
+        StreamController<String?>.broadcast();
 
+    const String navigationActionId = 'id_3';
     const AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    IOSInitializationSettings iosInitializationSettings =
-        const IOSInitializationSettings(
+    const DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
 
-    final InitializationSettings settings = InitializationSettings(
-        android: androidInitializationSettings, iOS: iosInitializationSettings);
-
-    await localNotificationService.initialize(settings,
-        onSelectNotification: (payload) async {
-      onNotifications.add(payload!);
-    });
+    const InitializationSettings settings = InitializationSettings(
+        android: androidInitializationSettings,
+        iOS: initializationSettingsDarwin,
+        macOS: initializationSettingsDarwin);
+    await localNotificationService.initialize(
+      settings,
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) {
+        switch (notificationResponse.notificationResponseType) {
+          case NotificationResponseType.selectedNotification:
+            selectNotificationStream.add(notificationResponse.payload);
+            break;
+          case NotificationResponseType.selectedNotificationAction:
+            if (notificationResponse.actionId == navigationActionId) {
+              selectNotificationStream.add(notificationResponse.payload);
+            }
+            break;
+        }
+      },
+      // onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+    );
+    // await localNotificationService.initialize(settings,
+    //     onSelectNotification: (payload) async {
+    //   onNotifications.add(payload!);
+    // });
   }
 
   static Future<NotificationDetails> _notificationDetails() async {
@@ -49,8 +87,8 @@ class LocalNotificationService {
       playSound: true,
     );
 
-    const IOSNotificationDetails iosNotificationDetails =
-        IOSNotificationDetails();
+    const DarwinNotificationDetails iosNotificationDetails =
+        DarwinNotificationDetails();
     return const NotificationDetails(
       android: androidNotificationDetails,
       iOS: iosNotificationDetails,
@@ -67,8 +105,8 @@ class LocalNotificationService {
       playSound: true,
     );
 
-    const IOSNotificationDetails iosNotificationDetails =
-        IOSNotificationDetails();
+    const DarwinNotificationDetails iosNotificationDetails =
+        DarwinNotificationDetails();
     return const NotificationDetails(
       android: androidNotificationDetails,
       iOS: iosNotificationDetails,
@@ -183,7 +221,7 @@ class LocalNotificationService {
     String title = 'One of Your To Do List on Due Date';
     String body = 'Have you done ${td.todoName} yet?';
     String dateOnly = td.dueDate.substring(0, 10);
-    String timeOnly = td.dueDate.substring(11);
+    String timeOnly = td.dueDate.substring(10);
     DateTime tempDate = DateFormat("MM/dd/yyyy").parse(dateOnly);
     late int hour;
     late int minute;
@@ -222,6 +260,7 @@ class LocalNotificationService {
       notifId = 1;
       prefs.setInt('due_date_count', notifId);
     }
+    prefs.setInt(td.id.toString(), notifId);
     showDueDateNotification(
       id: notifId,
       title: title,
@@ -229,6 +268,15 @@ class LocalNotificationService {
       date: tempDate,
       time: newTime,
     );
+  }
+
+  static deleteDoneNotification(ToDo td) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? notifId = prefs.getInt(td.id);
+    if (notifId != null) {
+      await prefs.remove(td.id);
+      localNotificationService.cancel(notifId);
+    }
   }
 
   static deleteNotification() {

@@ -43,7 +43,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
     if (widget.todo.hasDueDate()) {
       String dateOnly = widget.todo.dueDate.substring(0, 10);
       DateTime tempDate = DateFormat.yMd().parse(dateOnly);
-      String timeOnly = widget.todo.dueDate.substring(11);
+      String timeOnly = widget.todo.dueDate.substring(10);
       _dateController.text = DateFormat.yMd().format(tempDate);
       if (timeOnly.length == 8) {
         String indicator = timeOnly.substring(6);
@@ -55,7 +55,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
             DateTime(2019, 08, 1, hour, int.parse(timeOnly.substring(3, 5))),
             [hh, ':', nn, " ", am]).toString();
       } else {
-        String indicator = timeOnly.substring(5);
+        String indicator = timeOnly.substring(4);
         int hour = int.parse(timeOnly.substring(0, 1));
         if (indicator == 'PM' && hour != 12) {
           hour += 12;
@@ -296,9 +296,6 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
               ],
             ),
           ),
-          // const SizedBox(
-          //   height: 30,
-          // ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -308,6 +305,8 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                     foregroundColor: Colors.red,
                   ),
                   onPressed: () {
+                    LocalNotificationService.deleteDoneNotification(
+                        widget.todo);
                     Provider.of<TodoOperation>(
                       context,
                       listen: false,
@@ -338,10 +337,19 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                         LocalNotificationService.setDueDateNotification(
                             context: context, td: widget.todo);
                       } else {
-                        Provider.of<TodoOperation>(
-                          context,
-                          listen: false,
-                        ).updateTodo(widget.todo);
+                        if (widget.todo.hasDueDate()) {
+                          ToDo newTodo = widget.todo;
+                          newTodo.dueDate = 'no';
+                          Provider.of<TodoOperation>(context, listen: false)
+                              .deleteTodo(widget.todo);
+                          Provider.of<TodoOperation>(context, listen: false)
+                              .addTodo(newTodo.todoName, newTodo.priority);
+                        } else {
+                          Provider.of<TodoOperation>(
+                            context,
+                            listen: false,
+                          ).updateTodo(widget.todo);
+                        }
                       }
                       LocalNotificationService.setScheduledNotification(
                           context: context);

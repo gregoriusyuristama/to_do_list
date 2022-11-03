@@ -22,7 +22,9 @@ class LoginBox extends StatefulWidget {
   State<LoginBox> createState() => _LoginBoxState();
 }
 
-class _LoginBoxState extends State<LoginBox> with WidgetsBindingObserver {
+class _LoginBoxState extends State<LoginBox>
+//  with WidgetsBindingObserver
+{
   bool _emailValidated = true;
   bool _passwordValidated = true;
   bool _loginWithLink = false;
@@ -32,14 +34,14 @@ class _LoginBoxState extends State<LoginBox> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    // WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     _controllerEmail.dispose();
     _controllerPassword.dispose();
-    WidgetsBinding.instance.removeObserver(this);
+    // WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -89,44 +91,44 @@ class _LoginBoxState extends State<LoginBox> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final userEmail = prefs.getString('emailSignIn');
-    try {
-      FirebaseDynamicLinks.instance.onLink(
-          onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-        final Uri? deepLink = dynamicLink?.link;
-        if (deepLink != null) {
-          Authentication.handleSignInLink(deepLink, userEmail, context);
-          FirebaseDynamicLinks.instance.onLink(
-              onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-            final Uri deepLink = dynamicLink!.link;
-            Authentication.handleSignInLink(deepLink, userEmail, context);
-          }, onError: (OnLinkErrorException e) async {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  e.message.toString(),
-                ),
-              ),
-            );
-          });
-        }
-      }, onError: (OnLinkErrorException e) async {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              e.message.toString(),
-            ),
-          ),
-        );
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
-    }
+    // try {
+    //   FirebaseDynamicLinks.instance.onLink(
+    //       onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+    //     final Uri? deepLink = dynamicLink?.link;
+    //     if (deepLink != null) {
+    //       Authentication.handleSignInLink(deepLink, userEmail, context);
+    //       FirebaseDynamicLinks.instance.onLink(
+    //           onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+    //         final Uri deepLink = dynamicLink!.link;
+    //         Authentication.handleSignInLink(deepLink, userEmail, context);
+    //       }, onError: (OnLinkErrorException e) async {
+    //         ScaffoldMessenger.of(context).showSnackBar(
+    //           SnackBar(
+    //             content: Text(
+    //               e.message.toString(),
+    //             ),
+    //           ),
+    //         );
+    //       });
+    //     }
+    //   }, onError: (OnLinkErrorException e) async {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(
+    //         content: Text(
+    //           e.message.toString(),
+    //         ),
+    //       ),
+    //     );
+    //   });
+    // } catch (e) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text(
+    //         e.toString(),
+    //       ),
+    //     ),
+    //   );
+    // }
   }
 
   @override
@@ -211,11 +213,13 @@ class _LoginBoxState extends State<LoginBox> with WidgetsBindingObserver {
               ),
               child: ElevatedButton(
                 onPressed: () async {
+                  final progress = ProgressHUD.of(context);
                   if (_loginWithLink) {
-                    signInWithEmailandLink(_controllerEmail.text);
+                    progress?.show();
+                    await signInWithEmailandLink(_controllerEmail.text);
+                    progress?.dismiss();
                   } else {
                     FocusScope.of(context).unfocus();
-                    final progress = ProgressHUD.of(context);
                     setState(() {
                       _emailValidated =
                           Validation.validateEmail(_controllerEmail.text);
@@ -229,9 +233,6 @@ class _LoginBoxState extends State<LoginBox> with WidgetsBindingObserver {
                           password: _controllerPassword.text);
                       if (signInStatus == AuthStatus.successful) {
                         if (FirebaseAuth.instance.currentUser!.emailVerified) {
-                          await Provider.of<TodoOperation>(context,
-                                  listen: false)
-                              .setTodolist();
                           Navigator.of(context)
                               .popUntil((route) => route.isFirst);
                           Navigator.pushReplacementNamed(

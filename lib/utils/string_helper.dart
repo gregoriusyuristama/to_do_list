@@ -43,7 +43,7 @@ class StringHelper {
 
   static String formatDueDate(String date) {
     String dateOnly = date.substring(0, 10);
-    String timeOnly = date.substring(11);
+    String timeOnly = date.substring(10);
     DateTime tempDate = DateFormat("MM/dd/yyyy").parse(dateOnly);
     late String day;
     late String add = 'th';

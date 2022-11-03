@@ -30,32 +30,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 padding: const EdgeInsets.all(25.0),
                 alignment: Alignment.center,
                 child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        'Registration',
-                        style: Theme.of(context).textTheme.headline1,
-                        textAlign: TextAlign.left,
-                      ),
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                      Hero(
-                        tag: 'cardContainer',
-                        child: Material(
-                          elevation: 10,
-                          borderRadius: BorderRadius.circular(20.0),
-                          color: Colors.white,
-                          child: const Padding(
-                            padding: EdgeInsets.all(25.0),
-                            child: RegisterBox(),
+                  child: SizedBox(
+                    width: 400,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Registration',
+                          style: Theme.of(context).textTheme.headline1,
+                          textAlign: TextAlign.left,
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Hero(
+                          tag: 'cardContainer',
+                          child: Material(
+                            elevation: 10,
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: Colors.white,
+                            child: const Padding(
+                              padding: EdgeInsets.all(25.0),
+                              child: RegisterBox(),
+                            ),
                           ),
                         ),
-                      ),
-                      const ButtonToWelcomeScreen(),
-                    ],
+                        const ButtonToWelcomeScreen(),
+                      ],
+                    ),
                   ),
                 ),
               ),

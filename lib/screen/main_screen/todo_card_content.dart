@@ -38,19 +38,24 @@ class CardContent extends StatelessWidget {
                   ),
                   // color: kDefaultColor,
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.all(5),
-                      child: const Icon(
-                        Icons.calendar_month_outlined,
+                child: FittedBox(
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(5),
+                        child: const Icon(
+                          Icons.calendar_month_outlined,
+                        ),
                       ),
-                    ),
-                    Text(
-                      StringHelper.formatDueDate(todo.dueDate),
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          StringHelper.formatDueDate(todo.dueDate),
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               )
             : const SizedBox(),
