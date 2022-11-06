@@ -1,29 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/controller/todo_operation.dart';
+import 'package:to_do_list/utils/constants.dart';
 
 var backgroundCardDecoration = BoxDecoration(
   color: const Color.fromRGBO(246, 164, 97, 1.0),
   borderRadius: BorderRadius.circular(50),
-);
-
-const counterCardDecoration = BoxDecoration(
-  shape: BoxShape.circle,
-  // borderRadius: BorderRadius.circular(50),
-  color: Color.fromRGBO(244, 183, 132, 1.0),
-);
-const counterCardMargin = EdgeInsets.all(5);
-const counterCardWidth = 40.0;
-const counterCardHeight = 50.0;
-
-const counterTextStyle = TextStyle(
-  fontSize: 15,
-  fontWeight: FontWeight.bold,
-);
-const sizedBoxWidth = 20.0;
-
-const titleTextStyle = TextStyle(
-  fontSize: 18,
 );
 
 class TodoCounter extends StatelessWidget {
@@ -40,14 +22,14 @@ class TodoCounter extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                margin: counterCardMargin,
-                decoration: counterCardDecoration,
-                width: counterCardWidth,
-                height: counterCardHeight,
+                margin: kCounterCardMargin,
+                decoration: kCounterCardDecoration,
+                width: kCounterCardWidth,
+                height: kCounterCardHeight,
                 child: counterText(todoData.unFinishedTodoCount.toString()),
               ),
               const SizedBox(
-                width: sizedBoxWidth,
+                width: 20,
               ),
               textTitle('To Do List'),
             ],
@@ -62,7 +44,7 @@ class TodoCounter extends StatelessWidget {
       child: FittedBox(
         child: Text(
           text,
-          style: titleTextStyle,
+          style: kCounterTitleTextStyle,
         ),
       ),
     );
@@ -73,7 +55,7 @@ class TodoCounter extends StatelessWidget {
       child: FittedBox(
         child: Text(
           text,
-          style: counterTextStyle,
+          style: kCounterTextStyle,
         ),
       ),
     );

@@ -8,6 +8,7 @@ import 'package:to_do_list/widget/greetings.dart';
 import '../utils/local_notification_services.dart';
 
 class AppSettings extends StatelessWidget {
+  static const String id = '/settings';
   const AppSettings({Key? key}) : super(key: key);
 
   @override
@@ -52,6 +53,7 @@ class AppSettings extends StatelessWidget {
                                 child: SizedBox(
                                   height: constraints.maxHeight * 0.08,
                                   child: Row(
+                                    // mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       SizedBox(
                                         width: constraints.maxWidth * 0.1,
@@ -61,7 +63,7 @@ class AppSettings extends StatelessWidget {
                                               Navigator.pop(context),
                                           icon: const Icon(
                                             Icons.arrow_back,
-                                            size: 24,
+                                            // size: 24,
                                           ),
                                         ),
                                       ),

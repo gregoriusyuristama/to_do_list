@@ -1,18 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../controller/todo_operation.dart';
 import '../utils/authentication.dart';
 import '../utils/authentication_exception.dart';
 import '../utils/constants.dart';
 import '../utils/validation.dart';
-import '../screen/main_screen/main_screen.dart';
+import '../screen/main_screen.dart';
 import 'button_forgot_password.dart';
 
 class LoginBox extends StatefulWidget {
@@ -88,50 +87,6 @@ class _LoginBoxState extends State<LoginBox>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final userEmail = prefs.getString('emailSignIn');
-    // try {
-    //   FirebaseDynamicLinks.instance.onLink(
-    //       onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-    //     final Uri? deepLink = dynamicLink?.link;
-    //     if (deepLink != null) {
-    //       Authentication.handleSignInLink(deepLink, userEmail, context);
-    //       FirebaseDynamicLinks.instance.onLink(
-    //           onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-    //         final Uri deepLink = dynamicLink!.link;
-    //         Authentication.handleSignInLink(deepLink, userEmail, context);
-    //       }, onError: (OnLinkErrorException e) async {
-    //         ScaffoldMessenger.of(context).showSnackBar(
-    //           SnackBar(
-    //             content: Text(
-    //               e.message.toString(),
-    //             ),
-    //           ),
-    //         );
-    //       });
-    //     }
-    //   }, onError: (OnLinkErrorException e) async {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(
-    //         content: Text(
-    //           e.message.toString(),
-    //         ),
-    //       ),
-    //     );
-    //   });
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text(
-    //         e.toString(),
-    //       ),
-    //     ),
-    //   );
-    // }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AnimatedSize(
       duration: const Duration(
@@ -188,18 +143,21 @@ class _LoginBoxState extends State<LoginBox>
             const SizedBox(
               height: 10.0,
             ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _loginWithLink = !_loginWithLink;
-                });
-              },
-              child: Text(
-                !_loginWithLink
-                    ? 'Login With Email Link'
-                    : 'Login With Email and Password',
-                style: const TextStyle(
-                  color: kDefaultColor,
+            Visibility(
+              visible: !Platform.isMacOS,
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    _loginWithLink = !_loginWithLink;
+                  });
+                },
+                child: Text(
+                  !_loginWithLink
+                      ? 'Login With Email Link'
+                      : 'Login With Email and Password',
+                  style: const TextStyle(
+                    color: kDefaultColor,
+                  ),
                 ),
               ),
             ),

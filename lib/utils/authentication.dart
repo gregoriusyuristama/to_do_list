@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 import 'package:to_do_list/utils/firebase_options.dart';
 import 'package:to_do_list/controller/todo_operation.dart';
-import 'package:to_do_list/screen/main_screen/main_screen.dart';
+import 'package:to_do_list/screen/main_screen.dart';
 import 'dart:io';
 
 import '../screen/welcome_screen.dart';
@@ -80,15 +80,15 @@ class Authentication {
       if (Navigator.canPop(context)) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
-      ;
+
       Navigator.pushReplacementNamed(context, MainScreen.id);
     } catch (e) {
-      print(e.toString());
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text(e.toString()),
-      //   ),
-      // );
+      // print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
     }
   }
 

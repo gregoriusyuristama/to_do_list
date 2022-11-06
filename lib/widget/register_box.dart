@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 
-import '../../utils/authentication.dart';
-import '../../utils/authentication_exception.dart';
-import '../../utils/constants.dart';
-import '../../utils/validation.dart';
+import '../utils/authentication.dart';
+import '../utils/authentication_exception.dart';
+import '../utils/constants.dart';
+import '../utils/validation.dart';
 
 class RegisterBox extends StatefulWidget {
   const RegisterBox({Key? key}) : super(key: key);

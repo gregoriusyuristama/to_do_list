@@ -42,8 +42,8 @@ class StringHelper {
   }
 
   static String formatDueDate(String date) {
-    String dateOnly = date.substring(0, 10);
-    String timeOnly = date.substring(10);
+    String dateOnly = date.split(' ')[0];
+    String timeOnly = date.substring(dateOnly.length).trim();
     DateTime tempDate = DateFormat("MM/dd/yyyy").parse(dateOnly);
     late String day;
     late String add = 'th';

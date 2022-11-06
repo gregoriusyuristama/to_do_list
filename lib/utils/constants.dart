@@ -63,6 +63,13 @@ const kTodoBoxDecoration = BoxDecoration(
   ),
   color: Color.fromRGBO(247, 251, 255, 1.0),
 );
+const kTodoBoxDecorationLandscape = BoxDecoration(
+  borderRadius: BorderRadius.only(
+    topLeft: Radius.circular(40),
+    bottomLeft: Radius.circular(40),
+  ),
+  color: Color.fromRGBO(247, 251, 255, 1.0),
+);
 
 const kModalBotomSheetShape = RoundedRectangleBorder(
   borderRadius: BorderRadius.vertical(
@@ -101,4 +108,34 @@ const kTitleToDoBox = TextStyle(
   color: Colors.black,
   fontSize: 24,
   fontWeight: FontWeight.bold,
+);
+
+const kBorderRadiusFinishedLandscape = BorderRadius.only(
+  topLeft: Radius.circular(40),
+  bottomLeft: Radius.circular(40),
+);
+
+const kCounterCardDecoration = BoxDecoration(
+  shape: BoxShape.circle,
+  // borderRadius: BorderRadius.circular(50),
+  color: Color.fromRGBO(244, 183, 132, 1.0),
+);
+
+const kCounterCardMargin = EdgeInsets.all(5);
+const kCounterCardWidth = 40.0;
+const kCounterCardHeight = 50.0;
+
+const kCounterTextStyle = TextStyle(
+  fontSize: 15,
+  fontWeight: FontWeight.bold,
+);
+
+const kCounterTitleTextStyle = TextStyle(
+  fontSize: 18,
+);
+
+const kCounterFinishedDecoration = BoxDecoration(
+  shape: BoxShape.rectangle,
+  // borderRadius: BorderRadius.circular(50),
+  color: Color.fromRGBO(244, 183, 132, 1.0),
 );

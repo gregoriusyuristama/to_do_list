@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 const bottomPadding = EdgeInsets.only(left: 25.0, right: 25);
 
-class BottomButton extends StatelessWidget {
+class AddTodoButton extends StatelessWidget {
   final IconData icon;
   final Function func;
 
-  const BottomButton(this.icon, this.func, {Key? key}) : super(key: key);
+  const AddTodoButton(this.icon, this.func, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

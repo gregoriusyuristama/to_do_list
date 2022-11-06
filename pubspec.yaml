@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.3.1+9
+version: 1.4.0+11
 
 environment:
   sdk: ">=2.16.1 <3.0.0"
@@ -53,6 +53,7 @@ dependencies:
   intl: ^0.17.0
   date_format: ^2.0.7
   firebase_dynamic_links: ^5.0.3
+  icons_launcher: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -68,10 +69,25 @@ flutter_icons:
   image_path: "assets/icon.png"
   android: true # can specify file name here e.g. "ic_launcher"
   ios: true # can specify file name here e.g. "My-Launcher-Icon"
+  macos: 
+    generate: true
+    image_path: "./assets/icon.png"
   adaptive_icon_background: "assets/ToDoi_background.png" # only available for Android 8.0 devices and above
   adaptive_icon_foreground: "assets/ToDoi_transparent.png" # only available for Android 8.0 devices and above
   min_sdk_android: 21 # android min sdk min:16, default 21
   remove_alpha_ios: true
+
+icons_launcher:
+  image_path: "assets/icon_rounded.png"
+  platforms:
+    macos:
+      enable: true
+#     android:
+#       enable: true
+#       adaptive_background_image: 'assets/ToDoi_background.png'
+#       adaptive_foreground_image: 'assets/ToDoi_transparent.png'
+#     ios:
+#       enable: true
 
 flutter_app_name:
   name: "To Do List: ToDoi"

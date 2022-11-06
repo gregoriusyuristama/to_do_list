@@ -79,6 +79,8 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
   @override
   Widget build(BuildContext context) {
     dateTime = DateFormat.yMd().format(DateTime.now());
+    double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
+    double multiplier = 3;
     return AnimatedSize(
       duration: const Duration(
         milliseconds: 300,
@@ -89,13 +91,13 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
+          Text(
             'Add New To-Do-List',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: kDefaultColor,
               fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+              fontSize: multiplier * unitHeightValue,
             ),
           ),
           const Divider(
@@ -105,7 +107,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
           TextField(
             decoration: kBottomSheetFieldDecoration.copyWith(
               labelText: 'Your To-Do-List',
-              errorText: _validate ? 'Value Can\'t be Empty' : null,
+              errorText: _validate ? 'Value can\'t be Empty' : null,
             ),
             style: const TextStyle(
               fontWeight: FontWeight.normal,
@@ -263,7 +265,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
                       .addTodoWithDate(
                     _myTextController.text,
                     _prio,
-                    '${_dateController.text} ${_timeController.text}',
+                    '${_dateController.text.trim()} ${_timeController.text.trim()}',
                     context,
                   );
                 } else {

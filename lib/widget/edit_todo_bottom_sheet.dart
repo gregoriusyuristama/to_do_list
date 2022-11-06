@@ -41,9 +41,9 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
     _prio = widget.todo.priority;
     _hasDueDate = widget.todo.hasDueDate();
     if (widget.todo.hasDueDate()) {
-      String dateOnly = widget.todo.dueDate.substring(0, 10);
+      String dateOnly = widget.todo.dueDate.split(' ')[0];
       DateTime tempDate = DateFormat.yMd().parse(dateOnly);
-      String timeOnly = widget.todo.dueDate.substring(10);
+      String timeOnly = widget.todo.dueDate.substring(dateOnly.length).trim();
       _dateController.text = DateFormat.yMd().format(tempDate);
       if (timeOnly.length == 8) {
         String indicator = timeOnly.substring(6);
@@ -117,6 +117,8 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
+    double multiplier = 3;
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
       curve: Curves.fastOutSlowIn,
@@ -125,13 +127,13 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
+          Text(
             'Edit To-Do-List',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: kDefaultColor,
               fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+              fontSize: multiplier * unitHeightValue,
             ),
           ),
           const Divider(
@@ -313,7 +315,7 @@ class _EditTodoBottomSheet extends State<EditTodoBottomSheet> {
                     ).deleteTodo(widget.todo);
                     Navigator.pop(context);
                   },
-                  child: const Text('Remove'),
+                  child: const Text('Delete'),
                 ),
               ),
               Expanded(
