@@ -8,6 +8,7 @@ import '../utils/local_notification_services.dart';
 
 class TodoOperation with ChangeNotifier {
   List<ToDo> _todolist = [];
+  String _searchString = "";
 
   int get todoCount {
     return _todolist.length;
@@ -25,17 +26,33 @@ class TodoOperation with ChangeNotifier {
   }
 
   UnmodifiableListView<ToDo> get todolist {
-    return UnmodifiableListView(_todolist);
+    return _searchString.isEmpty
+        ? UnmodifiableListView(_todolist)
+        : UnmodifiableListView(
+            _todolist.where((todo) => todo.todoName.contains(_searchString)));
   }
 
   UnmodifiableListView<ToDo> get finishedTodolist {
-    return UnmodifiableListView(
-        _todolist.where((todo) => todo.todoDone == true));
+    return _searchString.isEmpty
+        ? UnmodifiableListView(_todolist.where((todo) => todo.todoDone == true))
+        : UnmodifiableListView(
+            _todolist.where(
+              (todo) => ((todo.todoDone == true) &&
+                  (todo.todoName.toLowerCase().contains(_searchString))),
+            ),
+          );
   }
 
   UnmodifiableListView<ToDo> get unfinishedTodolist {
-    return UnmodifiableListView(
-        _todolist.where((todo) => todo.todoDone == false));
+    return _searchString.isEmpty
+        ? UnmodifiableListView(
+            _todolist.where((todo) => todo.todoDone == false))
+        : UnmodifiableListView(
+            _todolist.where(
+              (todo) => ((todo.todoDone == false) &&
+                  (todo.todoName.toLowerCase().contains(_searchString))),
+            ),
+          );
   }
 
   Future<void> setTodolist() async {
@@ -81,6 +98,11 @@ class TodoOperation with ChangeNotifier {
     _todolist.sort(
       (a, b) => b.priority.compareTo(a.priority),
     );
+  }
+
+  void changeSearchString(String searchString) {
+    _searchString = searchString.toLowerCase();
+    notifyListeners();
   }
 
   void addTodo(String todoText, int prio) {

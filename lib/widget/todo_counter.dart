@@ -31,7 +31,7 @@ class TodoCounter extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              textTitle('To Do List'),
+              textTitle('Unfinished'),
             ],
           ),
         ),

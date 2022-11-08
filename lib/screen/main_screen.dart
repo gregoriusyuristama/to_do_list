@@ -85,13 +85,16 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: kDefaultBackgroundDecoration,
-        width: mediaQuery.size.width,
-        height: mediaQuery.size.height,
-        child: potrait
-            ? PotraitMainLayout(mediaQuery)
-            : const LandscapeMainLayout(),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Container(
+          decoration: kDefaultBackgroundDecoration,
+          width: mediaQuery.size.width,
+          height: mediaQuery.size.height,
+          child: potrait
+              ? PotraitMainLayout(mediaQuery)
+              : const LandscapeMainLayout(),
+        ),
       ),
     );
   }

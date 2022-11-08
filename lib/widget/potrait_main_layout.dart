@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/string_helper.dart';
 import 'greetings.dart';
+import 'search_todo.dart';
 import 'todo_box.dart';
 import 'todo_counter.dart';
 
@@ -38,31 +39,36 @@ class PotraitMainLayout extends StatelessWidget {
               height: availableHeight * 0.01,
             ),
             SizedBox(
-              height: availableHeight * 0.055,
+              height: availableHeight * 0.05,
               child: const TodoCounter(),
             ),
+            // SizedBox(
+            //   height: availableHeight * 0.055,
+            //   child: Align(
+            //     alignment: Alignment.center,
+            //     child: FittedBox(
+            //       child: Text(
+            //         StringHelper.formatDate(
+            //           DateTime.now(),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             SizedBox(
-              height: availableHeight * 0.055,
-              child: Align(
-                alignment: Alignment.center,
-                child: FittedBox(
-                  child: Text(
-                    StringHelper.formatDate(
-                      DateTime.now(),
-                    ),
-                  ),
-                ),
+              height: availableHeight * 0.01,
+            ),
+            Center(
+              child: SearchTodo(
+                mediaQuery.size.width,
+                availableHeight * 0.05,
               ),
             ),
-            // Center(
-            //   child: SearchTodo(
-            //       mediaQuery.size.width * 0.9, availableHeight * 0.05),
-            // ),
-            // SizedBox(
-            //   height: availableHeight * 0.025,
-            // ),
             SizedBox(
-              height: availableHeight * 0.8,
+              height: availableHeight * 0.01,
+            ),
+            SizedBox(
+              height: availableHeight * 0.78,
               width: mediaQuery.size.width,
               child: const TodoBox(false),
             ),

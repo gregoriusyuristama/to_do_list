@@ -57,9 +57,8 @@ const kBottomSheetFieldDecoration = InputDecoration(
 );
 
 const kTodoBoxDecoration = BoxDecoration(
-  borderRadius: BorderRadius.only(
-    topLeft: Radius.circular(20),
-    topRight: Radius.circular(20),
+  borderRadius: BorderRadius.all(
+    Radius.circular(40),
   ),
   color: Color.fromRGBO(247, 251, 255, 1.0),
 );

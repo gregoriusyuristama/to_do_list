@@ -121,11 +121,11 @@ class _TabletTodoBoxLayoutState extends State<TabletTodoBoxLayout> {
           child: Material(
             borderRadius: widget.isLandscape
                 ? kBorderRadiusFinishedLandscape
-                : BorderRadius.zero,
+                : const BorderRadius.all(Radius.circular(40)),
             child: InkWell(
               borderRadius: widget.isLandscape
                   ? kBorderRadiusFinishedLandscape
-                  : BorderRadius.zero,
+                  : BorderRadius.all(Radius.circular(_showUnfinished ? 40 : 0)),
               onTap: () {
                 setState(() {
                   _showUnfinished = !_showUnfinished;
@@ -140,7 +140,7 @@ class _TabletTodoBoxLayoutState extends State<TabletTodoBoxLayout> {
                 decoration: BoxDecoration(
                   borderRadius: widget.isLandscape
                       ? kBorderRadiusFinishedLandscape
-                      : BorderRadius.zero,
+                      : const BorderRadius.all(Radius.circular(40)),
                   border: widget.isLandscape
                       ? Border.all(
                           width: 0.5,

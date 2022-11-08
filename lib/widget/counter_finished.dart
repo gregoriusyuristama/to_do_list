@@ -5,7 +5,14 @@ import 'package:to_do_list/utils/constants.dart';
 
 class CounterLandscape extends StatelessWidget {
   final bool isFinished;
-  const CounterLandscape(this.isFinished, {Key? key}) : super(key: key);
+  final double availableHeight;
+  final double availableWidth;
+  const CounterLandscape(
+      {required this.availableHeight,
+      required this.availableWidth,
+      required this.isFinished,
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,22 +21,22 @@ class CounterLandscape extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: isFinished
-                ? const Color.fromRGBO(246, 164, 97, 1.0)
-                : const Color.fromRGBO(246, 106, 97, 1),
-            borderRadius: BorderRadius.circular(15),
+                ? const Color.fromRGBO(246, 106, 97, 1)
+                : const Color.fromRGBO(246, 164, 97, 1.0),
+            borderRadius: BorderRadius.circular(40),
           ),
-          width: 200,
-          height: 50,
+          width: availableWidth,
+          height: availableHeight,
           child: Row(
             children: [
               Container(
                 margin: kCounterCardMargin,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(40),
                   color: isFinished
-                      ? const Color.fromRGBO(244, 183, 132, 1.0)
-                      : const Color.fromRGBO(244, 132, 132, 1.0),
+                      ? const Color.fromRGBO(244, 132, 132, 1.0)
+                      : const Color.fromRGBO(244, 183, 132, 1.0),
                 ),
                 width: kCounterCardWidth,
                 height: kCounterCardHeight,

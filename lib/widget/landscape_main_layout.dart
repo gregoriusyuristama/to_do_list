@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do_list/screen/app_settings.dart';
 import 'package:to_do_list/utils/authentication.dart';
 import 'package:to_do_list/widget/counter_finished.dart';
+import 'package:to_do_list/widget/search_todo.dart';
 import 'package:to_do_list/widget/todo_box.dart';
 
 import '../utils/string_helper.dart';
@@ -16,18 +17,20 @@ class LandscapeMainLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
     final user = auth.currentUser;
-    double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
-    double unitWidthValue = MediaQuery.of(context).size.width * 0.01;
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+    double unitHeightValue = mediaQuery.size.height * 0.01;
+    double unitWidthValue = mediaQuery.size.width * 0.01;
     return Row(
       children: [
         Expanded(
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
+          child: LayoutBuilder(builder: (context, constraints) {
+            return Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight * 0.2,
                     color: const Color.fromRGBO(75, 191, 221, 0.7),
                     child: Padding(
                       padding:
@@ -41,78 +44,94 @@ class LandscapeMainLayout extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: constraints.maxHeight * 0.03,
+                      horizontal: constraints.maxWidth * 0.03,
+                    ),
+                    child: SearchTodo(
+                      constraints.maxWidth,
+                      constraints.maxHeight * 0.07,
+                    ),
+                  ),
+                  Container(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight * 0.58,
+                    alignment: FractionalOffset.topCenter,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: constraints.maxWidth * 0.03,
+                    ),
+                    child: Row(
                       children: [
-                        Expanded(
-                          child: Align(
-                            child: Column(
-                              children: const [
-                                CounterLandscape(true),
-                                SizedBox(
-                                  height: 25,
-                                ),
-                                CounterLandscape(false),
-                              ],
-                            ),
-                            alignment: FractionalOffset.topLeft,
-                          ),
-                          flex: 1,
+                        CounterLandscape(
+                          availableHeight: constraints.maxHeight * 0.05,
+                          availableWidth: constraints.maxWidth * 0.45,
+                          isFinished: true,
                         ),
-                        TextButton(
-                          child: const Text(
-                            'Settings',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                          ),
-                          onPressed: () =>
-                              Navigator.pushNamed(context, AppSettings.id),
+                        SizedBox(
+                          width: constraints.maxWidth * 0.04,
                         ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        TextButton(
-                          child: const Text(
-                            'Sign Out',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                          ),
-                          onPressed: () => {
-                            Authentication.confirmationDialog(
-                              context: context,
-                              confirmationText: 'Do you want to log out?',
-                            ).then((confirmed) {
-                              if (confirmed) {
-                                Authentication.signOut(context: context);
-                              }
-                            })
-                          },
+                        CounterLandscape(
+                          availableHeight: constraints.maxHeight * 0.05,
+                          availableWidth: constraints.maxWidth * 0.45,
+                          isFinished: false,
                         ),
                       ],
                     ),
                   ),
-                  flex: 4,
-                ),
-              ],
-            ),
-            color: const Color.fromRGBO(255, 255, 255, 0.2),
-          ),
+                  Container(
+                    height: constraints.maxHeight * 0.04,
+                    alignment: FractionalOffset.centerLeft,
+                    padding: const EdgeInsets.only(left: 10),
+                    child: TextButton(
+                      child: const Text(
+                        'Settings',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                      ),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, AppSettings.id),
+                    ),
+                  ),
+                  Container(
+                    height: constraints.maxHeight * 0.05,
+                    padding: const EdgeInsets.only(left: 10),
+                    alignment: FractionalOffset.centerLeft,
+                    child: TextButton(
+                      child: const Text(
+                        'Sign Out',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                      ),
+                      onPressed: () => {
+                        Authentication.confirmationDialog(
+                          context: context,
+                          confirmationText: 'Do you want to log out?',
+                        ).then((confirmed) {
+                          if (confirmed) {
+                            Authentication.signOut(context: context);
+                          }
+                        })
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              color: const Color.fromRGBO(255, 255, 255, 0.2),
+            );
+          }),
           flex: 1,
         ),
         Expanded(

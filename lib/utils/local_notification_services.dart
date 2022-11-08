@@ -166,7 +166,15 @@ class LocalNotificationService {
       id,
       title,
       body,
-      await _setSchedule(time, date),
+      tz.TZDateTime(
+        tz.local,
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.minute,
+        time.second,
+      ),
       details,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
@@ -196,19 +204,6 @@ class LocalNotificationService {
         : scheduledDate;
   }
 
-  static Future<tz.TZDateTime> _setSchedule(Time time, DateTime date) async {
-    final scheduledDate = tz.TZDateTime(
-      tz.local,
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-      time.second,
-    );
-    return scheduledDate;
-  }
-
   static setScheduledNotification({required BuildContext context}) {
     int totalTodos = Provider.of<TodoOperation>(
       context,
@@ -231,8 +226,8 @@ class LocalNotificationService {
       {required BuildContext context, required ToDo td}) async {
     String title = 'One of Your To Do List on Due Date';
     String body = 'Have you done ${td.todoName} yet?';
-    String dateOnly = td.dueDate.substring(0, 10);
-    String timeOnly = td.dueDate.substring(10);
+    String dateOnly = td.dueDate.split(' ')[0];
+    String timeOnly = td.dueDate.substring(dateOnly.length).trim();
     DateTime tempDate = DateFormat("MM/dd/yyyy").parse(dateOnly);
     late int hour;
     late int minute;

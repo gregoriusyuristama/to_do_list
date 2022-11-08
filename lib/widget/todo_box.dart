@@ -35,7 +35,8 @@ class _TodoBoxState extends State<TodoBox> {
     _bloc = Provider.of<TodoOperation>(context);
     return Container(
       decoration:
-          widget.isLandscape ? kTodoBoxDecorationLandscape : kTodoBoxDecoration,
+          // widget.isLandscape ? kTodoBoxDecorationLandscape :
+          kTodoBoxDecoration,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return (isTablet || Platform.isMacOS)

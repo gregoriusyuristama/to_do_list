@@ -15,7 +15,7 @@ const cardPadding = EdgeInsets.all(
 );
 var cardBoxDecorator = BoxDecoration(
   color: Colors.white,
-  borderRadius: BorderRadius.circular(20),
+  borderRadius: BorderRadius.circular(40),
   border: Border.all(
     color: Colors.black.withAlpha(50),
   ),
@@ -36,13 +36,15 @@ class TodoCard extends StatelessWidget {
     double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
     MediaQueryData mediaQuery = MediaQuery.of(context);
     bool isLandscape = mediaQuery.orientation == Orientation.landscape;
+    bool isTablet = TabletDetector.isTablet(mediaQuery);
     return Container(
       padding: cardPadding,
-      margin: const EdgeInsets.symmetric(horizontal: 25),
+      margin: EdgeInsets.symmetric(
+          horizontal: (isTablet || Platform.isMacOS) ? 25 : 5),
       child: Material(
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
-          onTap: () => (TabletDetector.isTablet(mediaQuery) || Platform.isMacOS)
+          borderRadius: BorderRadius.circular(40),
+          onTap: () => (isTablet || Platform.isMacOS)
               ? showDialog(
                   context: context,
                   // shape: const RoundedRectangleBorder(
